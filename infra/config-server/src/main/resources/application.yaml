@@ -1,0 +1,23 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations:
+            - classpath:config/core/{application}/
+            - classpath:config/infra/{application}/
+            - classpath:config/stats/{application}/
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10

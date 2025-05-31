@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: stats-server
+  config:
+    import: "configserver:http://config-server:8888"
+  cloud:
+    config:
+      fail-fast: false
+      retry:
+        initial-interval: 1000 # Начальный интервал повтора (1 сек)
+        max-interval: 2000 # Максимальный интервал (2 сек)
+        multiplier: 1.5 # Множитель для увеличения интервала
+        max-attempts: 10 # Количество попыток
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 10
