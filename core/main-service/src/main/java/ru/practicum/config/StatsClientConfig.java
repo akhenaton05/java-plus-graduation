@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "stats.client")
 @Data
 public class StatsClientConfig {
-    private String serviceId; // Например, "stats-service
+    private String serviceId;
 }

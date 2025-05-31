@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.MainService;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.config.StatsClientConfig;
-import ru.practicum.events.controller.PublicEventController;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.events.dto.LookEventDto;

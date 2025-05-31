@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = MainService.class)
 @AutoConfigureMockMvc
-@ActiveProfiles("test") // Добавлено
+@ActiveProfiles("test")
 @RequiredArgsConstructor
 public class AdminCategoryControllerTest {
     @Autowired

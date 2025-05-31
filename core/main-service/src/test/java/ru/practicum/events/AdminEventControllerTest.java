@@ -74,7 +74,6 @@ public class AdminEventControllerTest {
     @Test
     @SneakyThrows
     public void getEventsTest() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");
@@ -106,7 +105,6 @@ public class AdminEventControllerTest {
     @Test
     @SneakyThrows
     public void updateEventTest() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");

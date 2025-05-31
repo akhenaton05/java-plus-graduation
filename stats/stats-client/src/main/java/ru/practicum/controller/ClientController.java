@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.MaxAttemptsRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.dto.CreateEndpointHitDto;
@@ -28,9 +27,8 @@ public class ClientController {
     private final DiscoveryClient discoveryClient;
     private final RestClient restClient;
     private final RetryTemplate retryTemplate;
-    private final String statsServiceId; // Идентификатор сервиса статистики
+    private final String statsServiceId;
 
-    // Конструктор
     public ClientController(DiscoveryClient discoveryClient, String statsServiceId) {
         this.discoveryClient = discoveryClient;
         this.restClient = RestClient.create();
@@ -38,16 +36,13 @@ public class ClientController {
         this.statsServiceId = statsServiceId;
     }
 
-    // Настройка RetryTemplate
     private RetryTemplate createRetryTemplate() {
         RetryTemplate retryTemplate = new RetryTemplate();
 
-        // Настройка политики задержки между попытками (3 секунды)
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
         backOffPolicy.setBackOffPeriod(3000L);
         retryTemplate.setBackOffPolicy(backOffPolicy);
 
-        // Настройка политики повторных попыток (максимум 3 попытки)
         MaxAttemptsRetryPolicy retryPolicy = new MaxAttemptsRetryPolicy();
         retryPolicy.setMaxAttempts(3);
         retryTemplate.setRetryPolicy(retryPolicy);
@@ -68,7 +63,6 @@ public class ClientController {
         }
     }
 
-    // Метод для сохранения одного просмотра
     public ResponseEntity<Void> saveView(String addr, String uri) {
         log.info("ClientController.saveView addr {}, uri {}", addr, uri);
         CreateEndpointHitDto dto = new CreateEndpointHitDto(
@@ -87,7 +81,6 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // Метод для получения статистики
     public List<ReadEndpointHitDto> getHits(String start, String end, List<String> uris, boolean unique) {
         log.info("ClientController.getHits start {}, end {}, uris {}, unique {}", start, end, uris, unique);
 
@@ -108,7 +101,6 @@ public class ClientController {
                 .orElseGet(ArrayList::new);
     }
 
-    // Метод для сохранения группы просмотров
     public ResponseEntity<Void> saveHitsGroup(List<String> uris, String ip) {
         log.info("ClientController.saveHitsGroup uris {}, addr {}", uris, ip);
 
@@ -127,7 +119,6 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // Формирование URI с использованием DiscoveryClient и RetryTemplate
     private URI makeUri(String path, Map<String, String> queryParams) {
         ServiceInstance instance = retryTemplate.execute(ctx -> getInstance());
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.newInstance()
@@ -141,7 +132,6 @@ public class ClientController {
         return uriBuilder.build().toUri();
     }
 
-    // Кастомное исключение для ошибок службы обнаружения
     public static class StatsServerUnavailable extends RuntimeException {
         public StatsServerUnavailable(String message) {
             super(message);

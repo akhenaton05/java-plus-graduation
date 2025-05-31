@@ -13,7 +13,6 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.MainService;
-import ru.practicum.comments.controller.AdminCommentController;
 import ru.practicum.comments.service.CommentService;
 import ru.practicum.config.StatsClientConfig;
 

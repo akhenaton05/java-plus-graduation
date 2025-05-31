@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.users.controller.AdminUserController;
 import ru.practicum.users.dto.GetUsersDto;
 import ru.practicum.users.dto.NewUserRequest;
 import ru.practicum.users.dto.UserDto;

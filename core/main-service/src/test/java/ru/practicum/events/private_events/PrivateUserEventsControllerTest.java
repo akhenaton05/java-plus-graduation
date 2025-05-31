@@ -22,7 +22,6 @@ import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.dto.UpdateEventUserRequest;
 import ru.practicum.events.model.Location;
 import ru.practicum.events.model.StateEvent;
-import ru.practicum.users.controller.PrivateUserEventController;
 import ru.practicum.users.dto.UserShortDto;
 import ru.practicum.users.service.PrivateUserEventService;
 
@@ -86,7 +85,6 @@ public class PrivateUserEventsControllerTest {
     @Test
     @SneakyThrows
     public void addUserEvent() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");
@@ -118,7 +116,6 @@ public class PrivateUserEventsControllerTest {
     @Test
     @SneakyThrows
     public void testGetUserEventById() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");
@@ -147,7 +144,6 @@ public class PrivateUserEventsControllerTest {
     @Test
     @SneakyThrows
     public void testGetAllUsersEvents() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");
@@ -172,7 +168,6 @@ public class PrivateUserEventsControllerTest {
     @Test
     @SneakyThrows
     public void updateUserEvent() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");

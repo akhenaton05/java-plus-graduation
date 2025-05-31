@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.MainService;
-import ru.practicum.compilations.controller.PublicCompilationController;
 import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.dto.Filter;
 import ru.practicum.compilations.dto.NewCompilationDto;
@@ -62,7 +61,6 @@ public class PublicCompilationControllerTest {
     @Test
     @SneakyThrows
     public void getByIdTest() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");
@@ -84,7 +82,6 @@ public class PublicCompilationControllerTest {
     @Test
     @SneakyThrows
     public void getTest() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");
