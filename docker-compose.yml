@@ -76,8 +76,8 @@ services:
       - app-network
 
   ewm-service:
-    build: core/ewm-service
-    container_name: ewm-service
+    build: core/main-service
+    container_name: main-service
     environment:
       CLIENT_URL: http://stats-server:9090
       SPRING_DATASOURCE_URL: jdbc:postgresql://ewm-db:5432/ewm-database

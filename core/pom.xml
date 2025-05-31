@@ -10,7 +10,7 @@
     </parent>
 
     <modules>
-        <module>ewm-service</module>
+        <module>main-service</module>
     </modules>
 
     <artifactId>core</artifactId>

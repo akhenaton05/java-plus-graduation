@@ -6,8 +6,8 @@ spring:
           enabled: false
           lower-case-service-id: true
       routes:
-        - id: ewm_service_route
-          uri: lb://EWM-SERVICE
+        - id: main_service_route
+          uri: lb://MAIN-SERVICE
           predicates:
             - Path=/admin/**,/categories/**,/compilations/**,/events/**,/users/**
           filters:

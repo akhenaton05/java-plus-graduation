@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ewm-service
+    name: main-service
   config:
     import: "configserver:http://config-server:8888"
   cloud:
@@ -14,11 +14,14 @@ spring:
 
 eureka:
   client:
+    registryFetchIntervalSeconds: 5  # Обновлять реестр каждые 5 секунд
+    initialInstanceInfoReplicationIntervalSeconds: 5
     serviceUrl:
       defaultZone: http://discovery-server:8761/eureka
   instance:
     preferIpAddress: true
-    leaseRenewalIntervalInSeconds: 10
+    leaseRenewalIntervalInSeconds: 5  # Отправлять heartbeat каждые 5 секунд
+    leaseExpirationDurationInSeconds: 15  # Время до исключения из реестра
 
 logging:
   level:
