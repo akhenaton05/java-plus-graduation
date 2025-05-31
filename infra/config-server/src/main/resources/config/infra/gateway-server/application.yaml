@@ -1,37 +1,12 @@
 spring:
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: false
-          lower-case-service-id: true
+      discovery.locator.enabled: true
       routes:
         - id: main_service_route
-          uri: lb://MAIN-SERVICE
+          uri: lb://main-service
           predicates:
-            - Path=/admin/**,/categories/**,/compilations/**,/events/**,/users/**
-          filters:
-            - StripPrefix=0
-        - id: stats_service_route
-          uri: lb://STATS-SERVER
-          predicates:
-            - Path=/stats/**,/hit/**
-          filters:
-            - StripPrefix=0
-        - id: config_service_route
-          uri: lb://CONFIG-SERVER
-          predicates:
-            - Path=/config/**
-          filters:
-            - StripPrefix=1
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins:
-              - "http://localhost:8080"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-            allowCredentials: true
+            - Path=/**
 
 server:
   port: 8080
