@@ -2,20 +2,26 @@ spring:
   application:
     name: stats-server
   config:
-    import: "configserver:http://config-server:8888"
+    import: "configserver:"
   cloud:
     config:
-      fail-fast: false
+      fail-fast: true
       retry:
-        initial-interval: 1000 # Начальный интервал повтора (1 сек)
-        max-interval: 2000 # Максимальный интервал (2 сек)
-        multiplier: 1.5 # Множитель для увеличения интервала
-        max-attempts: 10 # Количество попыток
-
+        use-random-policy: true
+        max-interval: 6000
+      discovery:
+        enabled: true
+        serviceId: config-server
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discovery-server:8761/eureka
+      defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/
   instance:
     preferIpAddress: true
+    hostname: localhost
+    instance-id: "${spring.application.name}:${server.port}:${random.value}"
     leaseRenewalIntervalInSeconds: 10
+
+logging:
+  level:
+    org.springframework.boot.context.config: DEBUG
