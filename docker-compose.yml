@@ -1,18 +1,5 @@
 version: '3.8'
 services:
-  stats-server:
-    build: stats/stats-server
-    container_name: stats-server
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://stats-db:5432/ewm-stats
-      SPRING_DATASOURCE_USERNAME: stat
-      SPRING_DATASOURCE_PASSWORD: stat
-    depends_on:
-      stats-db:
-        condition: service_healthy
-    networks:
-      - app-network
-
   stats-db:
     image: postgres:16.1
     container_name: stats-db
@@ -29,19 +16,6 @@ services:
       timeout: 5s
     volumes:
       - stats_db_data:/var/lib/postgresql/data # Добавляем том для stats-db
-    networks:
-      - app-network
-
-  ewm-service:
-    build: core/main-service
-    container_name: main-service
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://ewm-db:5432/ewm-database
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
-    depends_on:
-      ewm-db:
-        condition: service_healthy
     networks:
       - app-network
 

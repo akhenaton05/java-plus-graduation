@@ -32,6 +32,7 @@ import ru.practicum.events.service.PublicEventsService;
 import ru.practicum.events.service.PublicEventsServiceImpl;
 import ru.practicum.users.dto.UserShortDto;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -175,6 +176,60 @@ public class PublicEventControllerTest {
         assertEquals("EVENT_DATE", searchParam.getValue().getSort(), "sort");
         assertEquals(0, searchParam.getValue().getFrom(), "from");
         assertEquals(10, searchParam.getValue().getSize(), "size");
+    }
+
+    @Test
+    @SneakyThrows
+    public void getFilteredEvents_whenValidParams_thenReturnCorrectEventDateFormat() {
+        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
+        ServiceInstance mockInstance = mock(ServiceInstance.class);
+        when(mockInstance.getHost()).thenReturn("localhost");
+        when(mockInstance.getPort()).thenReturn(9090);
+        when(discoveryClient.getInstances("stats-service")).thenReturn(Arrays.asList(mockInstance));
+
+        // Подготовка тестового EventShortDto
+        EventShortDto eventDto = EventShortDto.builder()
+                .id(1L)
+                .annotation("Test event")
+                .category(new CategoryDto(1L, "Test Category"))
+                .confirmedRequests(0)
+                .eventDate("2025-06-01 21:31:57") // Ожидаемый формат
+                .initiator(new UserShortDto(1L, "Test User"))
+                .paid(true)
+                .title("Test Event")
+                .views(0)
+                .build();
+        List<EventShortDto> expectedList = List.of(eventDto);
+
+        // Мокаем сервис
+        when(service.getFilteredEvents(any(), any())).thenReturn(expectedList);
+
+        // Выполняем запрос с исправленным параметром categories
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/events")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("text", "0")
+                        .param("categories", "1") // Изменено с "0" на "1"
+                        .param("paid", "true")
+                        .param("rangeStart", "2022-01-06 13:30:38")
+                        .param("rangeEnd", "2097-09-06 13:30:38")
+                        .param("onlyAvailable", "false")
+                        .param("sort", "EVENT_DATE")
+                        .param("from", "0")
+                        .param("size", "1000")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // Проверяем ответ
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        System.out.println("JSON Response: " + jsonResponse); // Для отладки
+        List<EventShortDto> actualList = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
+
+        assertEquals(1, actualList.size(), "Response should contain one event");
+        assertEquals(eventDto.getId(), actualList.getFirst().getId(), "Event ID should match");
+        assertEquals("2025-06-01 21:31:57", actualList.getFirst().getEventDate(),
+                "eventDate should be in format yyyy-MM-dd HH:mm:ss");
     }
 
     @Test

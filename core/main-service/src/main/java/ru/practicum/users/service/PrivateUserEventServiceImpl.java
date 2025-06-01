@@ -66,7 +66,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     @Transactional
     public EventFullDto addNewEvent(Long userId, NewEventDto eventDto) {
         User user = adminUserService.getUser(userId);
-        Event event = eventMapper.toEvent(eventDto, user);
+        Event event = eventMapper.dtoToEvent(eventDto, user);
 
         eventRepository.save(event);
 
