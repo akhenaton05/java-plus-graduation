@@ -5,6 +5,7 @@ import ru.practicum.config.DateConfig;
 import ru.practicum.events.dto.SearchEventsParams;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class SearchParamsValidator {
 
@@ -14,15 +15,15 @@ public class SearchParamsValidator {
         Long minCatId = se.getCategories().stream()
                 .min(Long::compareTo)
                 .orElse(null);
-        if (minCatId != null && minCatId < 1L) {
+        if (Objects.nonNull(minCatId) && minCatId < 1L) {
             throw new ConstraintViolationException("Invalid categories list", null);
         }
         LocalDateTime start =
-                (se.getRangeStart() == null) ? LocalDateTime.now() :
+                (Objects.isNull(se.getRangeStart())) ? LocalDateTime.now() :
                         LocalDateTime.parse(se.getRangeStart(), DateConfig.FORMATTER);
         LocalDateTime end =
-                (se.getRangeEnd() != null) ? LocalDateTime.parse(se.getRangeEnd(), DateConfig.FORMATTER) : null;
-        if (end != null && !end.isAfter(start))
+                (Objects.nonNull(se.getRangeEnd())) ? LocalDateTime.parse(se.getRangeEnd(), DateConfig.FORMATTER) : null;
+        if (Objects.nonNull(end) && !end.isAfter(start))
             throw new ConstraintViolationException(dateErrorMessage, null);
 
     }

@@ -23,6 +23,7 @@ import ru.practicum.events.validation.AdminEventValidator;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,11 +67,11 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
 
         // Фильтрация по диапазону времени
-        if (rangeStart != null) {
+        if (Objects.nonNull(rangeStart)) {
             builder.and(event.eventDate.goe(rangeStart));
         }
 
-        if (rangeEnd != null) {
+        if (Objects.nonNull(rangeEnd)) {
             builder.and(event.eventDate.loe(rangeEnd));
         }
 
@@ -105,19 +106,19 @@ public class AdminEventServiceImpl implements AdminEventService {
         AdminEventValidator.validateEventStatusUpdate(event, updateRequest);
 
         // 3. Обновление данных события
-        if (updateRequest.getTitle() != null) {
+        if (Objects.nonNull(updateRequest.getTitle())) {
             event.setTitle(updateRequest.getTitle());
         }
-        if (updateRequest.getAnnotation() != null) {
+        if (Objects.nonNull(updateRequest.getAnnotation())) {
             event.setAnnotation(updateRequest.getAnnotation());
         }
-        if (updateRequest.getDescription() != null) {
+        if (Objects.nonNull(updateRequest.getDescription())) {
             event.setDescription(updateRequest.getDescription());
         }
-        if (updateRequest.getEventDate() != null) {
+        if (Objects.nonNull(updateRequest.getEventDate())) {
             event.setEventDate(updateRequest.getEventDate());
         }
-        if (updateRequest.getCategory() != null) {
+        if (Objects.nonNull(updateRequest.getCategory())) {
             Category category = categoryRepository
                     .findById(Long.valueOf(updateRequest.getCategory()))
                     .orElseThrow(() -> new EntityNotFoundException(
@@ -125,13 +126,13 @@ public class AdminEventServiceImpl implements AdminEventService {
 
             event.setCategory(category);
         }
-        if (updateRequest.getPaid() != null) {
+        if (Objects.nonNull(updateRequest.getPaid())) {
             event.setPaid(updateRequest.getPaid());
         }
-        if (updateRequest.getParticipantLimit() != null) {
+        if (Objects.nonNull(updateRequest.getParticipantLimit())) {
             event.setParticipantLimit(updateRequest.getParticipantLimit());
         }
-        if (updateRequest.getStateAction() != null) {
+        if (Objects.nonNull(updateRequest.getStateAction())) {
             updateEventState(event, updateRequest.getStateAction());
         }
 

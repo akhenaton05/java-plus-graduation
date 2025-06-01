@@ -26,6 +26,7 @@ import ru.practicum.users.service.AdminUserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
@@ -47,13 +48,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentPagedDto getComments(Long eventId, int page, int size, CommentsOrder sort) {
-        if (eventId == null || eventId <= 0)
+        if (Objects.isNull(eventId) || eventId <= 0)
             throw new IllegalArgumentException("Event ID must be a positive number.");
         if (page <= 0)
             throw new IllegalArgumentException("Page number must be positive and greater than 0.");
         if (size <= 0)
             throw new IllegalArgumentException("Page size must be positive and greater than 0.");
-        if (sort == null)
+        if (Objects.isNull(sort))
             throw new IllegalArgumentException("Sort parameter cannot be null.");
 
         eventRepository.findById(eventId)
@@ -127,7 +128,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = getComment(commentId);
 
         if (!comment.getUser().getId().equals(userId)) {
-           throw new AccessDeniedException("Not enough rights");
+            throw new AccessDeniedException("Not enough rights");
         }
 
         comment.setStatus(CommentsStatus.DELETED);

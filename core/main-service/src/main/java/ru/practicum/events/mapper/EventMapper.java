@@ -1,7 +1,6 @@
 package ru.practicum.events.mapper;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.practicum.category.mapper.CategoryDtoMapper;
 import ru.practicum.category.model.Category;
@@ -63,7 +62,7 @@ public class EventMapper {
     }
 
     public EventFullDto toEventFullDto(Event event) {
-        String publishedOn = event.getPublishedOn() == null ?
+        String publishedOn = Objects.isNull(event.getPublishedOn()) ?
                 null :
                 event.getPublishedOn().format(DateConfig.FORMATTER);
 
@@ -71,12 +70,12 @@ public class EventMapper {
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(categoryDtoMapper.mapCategoryToDto(event.getCategory()))
-                .confirmedRequests((event.getConfirmedRequests() == null) ? 0 : event.getConfirmedRequests())
+                .confirmedRequests((Objects.isNull(event.getConfirmedRequests())) ? 0 : event.getConfirmedRequests())
                 .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
                 .initiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()))
                 .paid(event.isPaid())
                 .title(event.getTitle())
-                .views((event.getViews() == null) ? 0 : event.getViews())
+                .views((Objects.isNull(event.getViews())) ? 0 : event.getViews())
                 .createdOn(event.getCreatedOn().format(DateConfig.FORMATTER))
                 .description(event.getDescription())
                 .location(event.getLocation())
@@ -92,12 +91,12 @@ public class EventMapper {
                 .id(event.getId())
                 .annotation(event.getAnnotation())
                 .category(categoryDtoMapper.mapCategoryToDto(event.getCategory()))
-                .confirmedRequests((event.getConfirmedRequests() == null) ? 0 : event.getConfirmedRequests())
+                .confirmedRequests((Objects.isNull(event.getConfirmedRequests())) ? 0 : event.getConfirmedRequests())
                 .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
                 .initiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()))
                 .paid(event.isPaid())
                 .title(event.getTitle())
-                .views((event.getViews() == null) ? 0 : event.getViews())
+                .views((Objects.isNull(event.getViews())) ? 0 : event.getViews())
                 .build();
     }
 

@@ -30,7 +30,6 @@ public class PublicCategoryController {
         return ResponseEntity.status(HttpStatus.OK).body(cat);
     }
 
-    //в спецификации упоминаются фильтры, но я не смог найти информацию про них
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getCatList(@RequestParam(required = false, defaultValue = "0") int from,
                                                         @RequestParam(required = false, defaultValue = "10") int size) {

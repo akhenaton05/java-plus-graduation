@@ -14,7 +14,7 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
     @Override
     public LocalDateTime convert(String source) {
         if (source.isBlank()) {
-            return null;
+            throw new IllegalArgumentException("Source is blank");
         }
 
         try {

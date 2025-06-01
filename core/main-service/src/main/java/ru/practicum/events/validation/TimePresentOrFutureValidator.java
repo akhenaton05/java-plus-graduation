@@ -5,12 +5,13 @@ import jakarta.validation.ConstraintValidatorContext;
 import ru.practicum.config.DateConfig;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class TimePresentOrFutureValidator implements ConstraintValidator<TimePresentOrFuture, String> {
 
     @Override
     public boolean isValid(String eventDate, ConstraintValidatorContext context) {
-        if (eventDate == null) {
+        if (Objects.isNull(eventDate)) {
             return true;
         }
 

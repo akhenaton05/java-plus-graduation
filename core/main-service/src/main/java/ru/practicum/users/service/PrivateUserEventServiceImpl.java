@@ -202,7 +202,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     }
 
     private void updateEventState(Event event, String stateAction) {
-        if (stateAction == null) return;
+        if (Objects.isNull(stateAction)) return;
 
         if ("PUBLISH_REVIEW".equals(stateAction)) {
             throw new ForbiddenActionException("Publishing this event is forbidden.");

@@ -11,9 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 public class GetUsersDto {
 
-    List<Long> ids;
+    private List<Long> ids;
 
-    int from;
+    private int from;
 
-    int size;
+    private int size;
 }

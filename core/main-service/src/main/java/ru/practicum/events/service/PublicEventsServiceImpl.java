@@ -2,7 +2,6 @@ package ru.practicum.events.service;
 
 import com.querydsl.core.BooleanBuilder;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +62,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
     public Event getEventAnyStatusWithViews(Long id) {
         //Attention: this method works without saving views!
         Event event = eventRepository.getSingleEvent(id);
-        if (event == null) {
+        if (Objects.isNull(event)) {
                 throw new EntityNotFoundException("Event with " + id + " not found");
         }
         if (!event.getState().equals(StateEvent.PUBLISHED)) {
@@ -138,13 +137,13 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         // Добавляем условие диапазона дат
         LocalDateTime start;
         LocalDateTime end;
-        if (searchEventsParams.getRangeStart() == null) {
+        if (Objects.isNull(searchEventsParams.getRangeStart())) {
             start = LocalDateTime.now();
             searchEventsParams.setRangeStart(start.format(DateConfig.FORMATTER));
         } else {
             start = LocalDateTime.parse(searchEventsParams.getRangeStart(), DateConfig.FORMATTER);
         }
-        if (searchEventsParams.getRangeEnd() == null) {
+        if (Objects.isNull(searchEventsParams.getRangeEnd())) {
             builder.and(QEvent.event.eventDate.goe(start));
         } else {
             end = LocalDateTime.parse(searchEventsParams.getRangeEnd(), DateConfig.FORMATTER);
@@ -160,7 +159,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
 
         log.info("PublicEventsServiceImpl.getFilteredEvents: events {}", events);
         // Если не было установлено rangeEnd, устанавливаем
-        if (searchEventsParams.getRangeEnd() == null) {
+        if (Objects.isNull(searchEventsParams.getRangeEnd())) {
             searchEventsParams.setRangeEnd(LocalDateTime.now().format(DateConfig.FORMATTER));
         }
         // Формируем список uris

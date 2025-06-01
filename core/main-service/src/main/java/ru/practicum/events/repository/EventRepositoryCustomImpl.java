@@ -17,6 +17,7 @@ import ru.practicum.users.model.QParticipationRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -42,7 +43,7 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                 .from(event)
                 .fetchOne();
 
-        if (total == null)
+        if (Objects.isNull(total))
             throw new RuntimeException("Не удалось определить количество событий");
 
         return new PageImpl<>(content, pageable, total);
@@ -61,14 +62,14 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                 .groupBy(event);
         Tuple result = query.fetchOne();
 
-        if (result == null) {
+        if (Objects.isNull(result)) {
             throw new EntityNotFoundException("Event with" + eventId + " not found");
         }
 
         Event foundEvent = result.get(event);
         Integer confirmedCount = result.get(request.id.count()).intValue();
 
-        foundEvent.setConfirmedRequests((confirmedCount == null) ? 0 : confirmedCount);
+        foundEvent.setConfirmedRequests((Objects.isNull(confirmedCount)) ? 0 : confirmedCount);
 
         return foundEvent;
     }
@@ -141,17 +142,17 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                 .groupBy(event.id)
                 .fetchOne();
 
-        if (result == null || result.get(event) == null) {
+        if (Objects.isNull(result) || Objects.isNull(result.get(event))) {
             return null;
         }
 
         Event eventResult = result.get(event);
-        if (eventResult == null) {
+        if (Objects.isNull(eventResult)) {
             return null;
         }
         Integer confirmedRequestsCount = result.get(participation.id.count().coalesce(0L).intValue());
 
-        eventResult.setConfirmedRequests((confirmedRequestsCount == null) ? 0 : confirmedRequestsCount);
+        eventResult.setConfirmedRequests((Objects.isNull(confirmedRequestsCount)) ? 0 : confirmedRequestsCount);
 
         return eventResult;
     }
@@ -160,7 +161,7 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
         List<Event> events = new ArrayList<>();
         for (Tuple tuple : tuples) {
             Event e = tuple.get(event);  // Извлекаем событие
-            if (e != null) {
+            if (Objects.nonNull(e)) {
                 Integer confirmedCount = Optional.ofNullable(tuple.get(1, Long.class))
                         .map(Long::intValue)
                         .orElse(0);  // Извлекаем количество участников

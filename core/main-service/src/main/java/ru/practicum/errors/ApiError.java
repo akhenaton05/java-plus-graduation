@@ -9,11 +9,11 @@ import java.util.stream.Collectors;
 
 @Data
 public class ApiError {
-    List<String> errors;
-    String message;
-    String reason;
-    String status;
-    String timestamp;
+    private List<String> errors;
+    private String message;
+    private String reason;
+    private String status;
+    private String timestamp;
 
     public ApiError(String status, String reason, Throwable ex) {
         this.errors = acceptStackTrace(ex);

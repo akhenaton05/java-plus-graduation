@@ -16,6 +16,7 @@ import ru.practicum.users.validation.ParticipationRequestValidator;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class ParticipationRequestService {
         RuntimeException validationError =
                 participationRequestValidator.checkRequest(user, event, confirmedRequestsCount);
 
-        if (validationError != null)
+        if (Objects.nonNull(validationError))
             throw validationError;
 
         ParticipationRequest request = new ParticipationRequest();

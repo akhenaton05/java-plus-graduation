@@ -24,6 +24,7 @@ import ru.practicum.events.service.PublicEventsServiceImpl;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -64,15 +65,15 @@ public class CompilationServiceImpl implements CompilationService {
         log.info("Update compilation with id {}", compId);
         Compilation compilation = getCompilation(compId);
 
-        if (updateCompilationRequest.getEvents() != null) {
+        if (Objects.nonNull(updateCompilationRequest.getEvents())) {
             compilation.setEvents(updateCompilationRequest.getEvents());
         }
 
-        if (updateCompilationRequest.getPinned() != null) {
+        if (Objects.nonNull(updateCompilationRequest.getPinned())) {
             compilation.setPinned(updateCompilationRequest.getPinned());
         }
 
-        if (updateCompilationRequest.getTitle() != null) {
+        if (Objects.nonNull(updateCompilationRequest.getTitle())) {
             compilation.setTitle(updateCompilationRequest.getTitle());
         }
         Compilation updateCompilation = compilationRepository.save(compilation);
@@ -124,7 +125,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     private List<EventShortDto> getEventsListForDto(Compilation compilation) {
-        if (compilation.getEvents() == null || compilation.getEvents().isEmpty()) {
+        if (Objects.isNull(compilation.getEvents()) || compilation.getEvents().isEmpty()) {
             return Collections.EMPTY_LIST;
         }
 
