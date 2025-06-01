@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.users.dto.GetUsersDto;
 import ru.practicum.users.dto.NewUserRequest;
 import ru.practicum.users.dto.UserDto;
-import ru.practicum.users.mapper.NewUserRequestToUserMapper;
-import ru.practicum.users.mapper.UserToDtoMapper;
+import ru.practicum.users.mapper.NewUserRequestMapper;
+import ru.practicum.users.mapper.UserMapper;
 import ru.practicum.users.model.User;
 import ru.practicum.users.repository.AdminUserRepository;
 
@@ -26,9 +26,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     private final AdminUserRepository adminUserRepository;
 
-    private final UserToDtoMapper userToDtoMapper;
+    private final UserMapper userToDtoMapper;
 
-    private final NewUserRequestToUserMapper userShortMapper;
+    private final NewUserRequestMapper userShortMapper;
 
     @Override
     public List<UserDto> getUsers(GetUsersDto parameters) {
@@ -56,7 +56,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         adminUserRepository.deleteById(id);
     }
 
-    //используется для получения user при необходимости и проверок существования
+    //используется для получения user необходимости и проверок существования
     @Override
     public User getUser(long id) {
         return adminUserRepository.findById(id)

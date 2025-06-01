@@ -23,17 +23,16 @@ import java.util.List;
 @Slf4j
 @Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
-
     private final CategoryRepository categoryRepository;
-
     private final NewCategoryMapper newCategoryMapper;
+    private final CategoryDtoMapper categoryDtoMapper;
 
     @Override
     @Transactional
     public CategoryDto addCategory(NewCategoryDto inputCat) {
         log.info("\nCategoryServiceImpl.addCategory {}", inputCat);
         Category category = newCategoryMapper.mapNewCategoryDtoToCategory(inputCat);
-        return CategoryDtoMapper.mapCategoryToDto(categoryRepository.save(category));
+        return categoryDtoMapper.mapCategoryToDto(categoryRepository.save(category));
     }
 
     @Override
@@ -49,13 +48,13 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto updateCategory(CategoryDto inputCat) {
         if (!categoryRepository.existsById(inputCat.getId()))
             throw new EntityNotFoundException("Category with " + inputCat.getId() + " not found");
-        categoryRepository.save(CategoryDtoMapper.mapDtoToCategory(inputCat));
+        categoryRepository.save(categoryDtoMapper.mapDtoToCategory(inputCat));
         return inputCat;
     }
 
     @Override
     public CategoryDto getCategory(long id) {
-        return CategoryDtoMapper.mapCategoryToDto(getCategoryById(id));
+        return categoryDtoMapper.mapCategoryToDto(getCategoryById(id));
     }
 
     @Override
@@ -65,7 +64,7 @@ public class CategoryServiceImpl implements CategoryService {
         Pageable pageable = PageRequest.of(page, params.getSize());
         Page<Category> response = categoryRepository.findAll(pageable);
         List<Category> categories = response.getContent().stream().toList();
-        return CategoryDtoMapper.mapCatListToDtoList(categories);
+        return categoryDtoMapper.mapCatListToDtoList(categories);
     }
 
     private Category getCategoryById(Long id) {

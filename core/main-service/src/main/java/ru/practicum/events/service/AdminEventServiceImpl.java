@@ -32,6 +32,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
+    private final EventMapper eventMapper;
 
     @Override
     public List<EventFullDto> getEvents(
@@ -89,7 +90,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         // Преобразуем сущности Event в EventFullDto
         return eventsPage.getContent().stream()
-                .map(EventMapper::toEventFullDto)
+                .map(eventMapper::toEventFullDto)
                 .collect(Collectors.toList());
     }
 
@@ -138,7 +139,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         event = eventRepository.save(event);
 
         // 5. Преобразование в DTO и возврат
-        return EventMapper.toEventFullDto(event);
+        return eventMapper.toEventFullDto(event);
     }
 
     private void updateEventState(Event event, EventStateAction stateAction) {

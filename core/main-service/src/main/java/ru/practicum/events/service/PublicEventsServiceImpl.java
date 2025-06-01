@@ -36,11 +36,13 @@ public class PublicEventsServiceImpl implements PublicEventsService {
 
     private final EventRepository eventRepository;
     private final ClientController clientController;
+    private final EventMapper eventMapper;
 
     @Autowired
-    public PublicEventsServiceImpl(EventRepository eventRepository, DiscoveryClient discoveryClient, StatsClientConfig statsClientConfig) {
+    public PublicEventsServiceImpl(EventRepository eventRepository, DiscoveryClient discoveryClient, StatsClientConfig statsClientConfig, EventMapper eventMapper) {
         this.eventRepository = eventRepository;
         this.clientController = new ClientController(discoveryClient, statsClientConfig.getServiceId());
+        this.eventMapper = eventMapper;
     }
 
     @Override
@@ -108,7 +110,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         //Имеем новый просмотр - сохраняем его
         clientController.saveView(lookEventDto.getIp(), lookEventDto.getUri());
 
-        return EventMapper.toEventFullDto(event);
+        return eventMapper.toEventFullDto(event);
     }
 
     @Override
@@ -193,7 +195,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         uris.add("/events");
         clientController.saveHitsGroup(uris, lookEventDto.getIp());
         log.info("\n Final list {}", sortedEvents);
-        return EventMapper.toListEventShortDto(sortedEvents);
+        return eventMapper.toListEventShortDto(sortedEvents);
     }
 
     public void viewsToEvents(List<ReadEndpointHitDto> viewsList, List<Event> events) {

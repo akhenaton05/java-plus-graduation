@@ -1,7 +1,11 @@
 package ru.practicum.events.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.factory.Mappers;
+import org.mapstruct.IterableMapping;
+import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.mapper.CategoryDtoMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.config.DateConfig;
@@ -9,98 +13,54 @@ import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.model.Event;
-import ru.practicum.events.model.StateEvent;
 import ru.practicum.users.dto.UserShortDto;
 import ru.practicum.users.model.User;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.List;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class EventMapper {
-    public static NewEventDto toNewEventDto(Event event) {
-        return NewEventDto.builder()
-                .id(event.getId())
-                .annotation(event.getAnnotation())
-                .category(event.getCategory().getId())
-                .description(event.getDescription())
-                .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
-                .location(event.getLocation())
-                .paid(event.isPaid())
-                .participantLimit(event.getParticipantLimit())
-                .requestModeration(event.isRequestModeration())
-                .title(event.getTitle())
-                .build();
-    }
+@Mapper(componentModel = "spring",
+        uses = {CategoryDtoMapper.class},
+        imports = {DateConfig.class, LocalDateTime.class, Category.class})
+public interface EventMapper {
 
-    public static Event dtoToEvent(NewEventDto dto, User user) {
-        Category category = new Category();
-        category.setId((long) dto.getCategory());
+    EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-        LocalDateTime eventTime = LocalDateTime.parse(dto.getEventDate(), DateConfig.FORMATTER);
-        return Event.builder()
-                .id(dto.getId())
-                .annotation(dto.getAnnotation())
-                .title(dto.getTitle())
-                .category(category)
-                .description(dto.getDescription())
-                .eventDate(eventTime)
-                .location(dto.getLocation())
-                .paid(dto.isPaid())
-                .participantLimit(Objects.nonNull(dto.getParticipantLimit()) ? dto.getParticipantLimit() : 0)
-                .requestModeration(Objects.nonNull(dto.getRequestModeration()) ? dto.getRequestModeration() : true)
-                .initiator(user)
-                .createdOn(LocalDateTime.now())
-                .publishedOn(LocalDateTime.now())
-                .state(StateEvent.PENDING)
-                .views(0)
-                .build();
-    }
+    @Mapping(target = "category", source = "category.id")
+    @Mapping(target = "eventDate", expression = "java(event.getEventDate().format(DateConfig.FORMATTER))")
+    NewEventDto toNewEventDto(Event event);
 
-    public static EventFullDto toEventFullDto(Event event) {
-        String publishedOn = event.getPublishedOn() == null ?
-                null :
-                event.getPublishedOn().format(DateConfig.FORMATTER);
+    @Mapping(target = "id", source = "dto.id")
+    @Mapping(target = "category", expression = "java(Category.builder().id(dto.getCategory()).build())")
+    @Mapping(target = "eventDate", expression = "java(LocalDateTime.parse(dto.getEventDate(), DateConfig.FORMATTER))")
+    @Mapping(target = "participantLimit", expression = "java(dto.getParticipantLimit() != null ? dto.getParticipantLimit() : 0)")
+    @Mapping(target = "requestModeration", expression = "java(dto.getRequestModeration() != null ? dto.getRequestModeration() : true)")
+    @Mapping(target = "initiator", source = "user")
+    @Mapping(target = "createdOn", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "publishedOn", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "state", constant = "PENDING")
+    @Mapping(target = "views", constant = "0")
+    Event toEvent(NewEventDto dto, User user);
 
-        return EventFullDto.builder()
-                .id(event.getId())
-                .annotation(event.getAnnotation())
-                .category(CategoryDtoMapper.mapCategoryToDto(event.getCategory()))
-                .confirmedRequests((event.getConfirmedRequests() == null) ? 0 : event.getConfirmedRequests())
-                .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
-                .initiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()))
-                .paid(event.isPaid())
-                .title(event.getTitle())
-                .views((event.getViews() == null) ? 0 : event.getViews())
-                .createdOn(event.getCreatedOn().format(DateConfig.FORMATTER))
-                .description(event.getDescription())
-                .location(event.getLocation())
-                .participantLimit(event.getParticipantLimit())
-                .publishedOn(publishedOn)
-                .requestModeration(event.isRequestModeration())
-                .state(event.getState())
-                .build();
-    }
+    @Mapping(target = "category", source = "category")
+    @Mapping(target = "confirmedRequests", expression = "java(event.getConfirmedRequests() == null ? 0 : event.getConfirmedRequests())")
+    @Mapping(target = "eventDate", expression = "java(event.getEventDate().format(DateConfig.FORMATTER))")
+    @Mapping(target = "initiator", expression = "java(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()))")
+    @Mapping(target = "views", expression = "java(event.getViews() == null ? 0 : event.getViews())")
+    @Mapping(target = "createdOn", expression = "java(event.getCreatedOn().format(DateConfig.FORMATTER))")
+    @Mapping(target = "publishedOn", expression = "java(event.getPublishedOn() == null ? null : event.getPublishedOn().format(DateConfig.FORMATTER))")
+    EventFullDto toEventFullDto(Event event);
 
-    public static EventShortDto toEventShortDto(Event event) {
-        return EventShortDto.builder()
-                .id(event.getId())
-                .annotation(event.getAnnotation())
-                .category(CategoryDtoMapper.mapCategoryToDto(event.getCategory()))
-                .confirmedRequests((event.getConfirmedRequests() == null) ? 0 : event.getConfirmedRequests())
-                .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
-                .initiator(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()))
-                .paid(event.isPaid())
-                .title(event.getTitle())
-                .views((event.getViews() == null) ? 0 : event.getViews())
-                .build();
-    }
+    @Mapping(target = "category", source = "category")
+    @Mapping(target = "confirmedRequests", expression = "java(event.getConfirmedRequests() == null ? 0 : event.getConfirmedRequests())")
+    @Mapping(target = "eventDate", expression = "java(event.getEventDate().format(DateConfig.FORMATTER))")
+    @Mapping(target = "initiator", expression = "java(new UserShortDto(event.getInitiator().getId(), event.getInitiator().getName()))")
+    @Mapping(target = "views", expression = "java(event.getViews() == null ? 0 : event.getViews())")
+    EventShortDto toEventShortDto(Event event);
 
-    public static List<EventShortDto> toListEventShortDto(List<Event> events) {
-        return events.stream()
-                .map(EventMapper::toEventShortDto)
-                .toList();
-    }
+    @IterableMapping(qualifiedByName = "toEventShortDto")
+    List<EventShortDto> toListEventShortDto(List<Event> events);
 
+    @Named("toEventShortDto")
+    EventShortDto toEventShortDtoNamed(Event event);
 }

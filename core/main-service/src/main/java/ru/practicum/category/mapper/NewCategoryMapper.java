@@ -1,15 +1,16 @@
 package ru.practicum.category.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.model.Category;
 
-@Component
-public class NewCategoryMapper {
+@Mapper(componentModel = "spring")
+public interface NewCategoryMapper {
 
-    public Category mapNewCategoryDtoToCategory(NewCategoryDto inpurDto) {
-        Category category = new Category();
-        category.setName(inpurDto.getName());
-        return category;
-    }
+    NewCategoryMapper INSTANCE = Mappers.getMapper(NewCategoryMapper.class);
+
+    @Mapping(target = "id", ignore = true)
+    Category mapNewCategoryDtoToCategory(NewCategoryDto newCategoryDto);
 }

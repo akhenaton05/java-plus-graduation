@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.users.dto.ParticipationRequestDto;
-import ru.practicum.users.mapper.ParticipationRequestToDtoMapper;
+import ru.practicum.users.mapper.ParticipationRequestMapper;
 import ru.practicum.users.model.ParticipationRequest;
 import ru.practicum.users.model.ParticipationRequestStatus;
 import ru.practicum.users.model.User;
@@ -24,16 +24,15 @@ public class ParticipationRequestService {
 
     private final ParticipationRequestRepository requestRepository;
     private final EventRepository eventRepository;
-
     private final AdminUserService adminUserService;
-
     private final ParticipationRequestValidator participationRequestValidator;
+    private final ParticipationRequestMapper participationRequestMapper;
 
     public List<ParticipationRequestDto> getUserRequests(Long userId) {
         adminUserService.getUser(userId);
         return requestRepository.findByUserId(userId)
                 .stream()
-                .map(ParticipationRequestToDtoMapper::mapToDto)
+                .map(participationRequestMapper::mapToDto)
                 .toList();
     }
 
@@ -67,7 +66,7 @@ public class ParticipationRequestService {
 
 
         ParticipationRequest savedRequest = requestRepository.save(request);
-        return ParticipationRequestToDtoMapper.mapToDto(savedRequest);
+        return participationRequestMapper.mapToDto(savedRequest);
     }
 
     @Transactional
@@ -78,6 +77,6 @@ public class ParticipationRequestService {
         request.setStatus(ParticipationRequestStatus.CANCELED);
         requestRepository.save(request);
 
-        return ParticipationRequestToDtoMapper.mapToDto(request);
+        return participationRequestMapper.mapToDto(request);
     }
 }

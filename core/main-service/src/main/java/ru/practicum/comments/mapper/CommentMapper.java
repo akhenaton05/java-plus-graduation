@@ -1,5 +1,7 @@
 package ru.practicum.comments.mapper;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.practicum.comments.dto.CommentEconomDto;
 import ru.practicum.comments.dto.CommentOutputDto;
@@ -8,9 +10,11 @@ import ru.practicum.events.mapper.EventMapper;
 import ru.practicum.users.model.User;
 
 @Component
+@RequiredArgsConstructor
 public class CommentMapper {
+    private final EventMapper eventMapper;
 
-    public static CommentOutputDto commentToOutputDto(Comment comment) {
+    public CommentOutputDto commentToOutputDto(Comment comment) {
         User user = User.builder()
                 .id(comment.getUser().getId())
                 .email(comment.getUser().getEmail())
@@ -20,14 +24,14 @@ public class CommentMapper {
         return CommentOutputDto.builder()
                 .id(comment.getId())
                 .user(user)
-                .event(EventMapper.toEventShortDto(comment.getEvent()))
+                .event(eventMapper.toEventShortDto(comment.getEvent()))
                 .text(comment.getText())
                 .created(comment.getCreated())
                 .status(comment.getStatus())
                 .build();
     }
 
-    public static CommentEconomDto commentToEconomDto(Comment comment) {
+    public CommentEconomDto commentToEconomDto(Comment comment) {
         return CommentEconomDto.builder()
                 .id(comment.getId())
                 .userId(comment.getUser().getId())

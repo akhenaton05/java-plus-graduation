@@ -21,7 +21,7 @@ import ru.practicum.users.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.users.dto.EventRequestStatusUpdateResult;
 import ru.practicum.users.dto.GetUserEventsDto;
 import ru.practicum.users.dto.ParticipationRequestDto;
-import ru.practicum.users.mapper.ParticipationRequestToDtoMapper;
+import ru.practicum.users.mapper.ParticipationRequestMapper;
 import ru.practicum.users.model.ParticipationRequest;
 import ru.practicum.users.model.ParticipationRequestStatus;
 import ru.practicum.users.model.RequestUpdateStatus;
@@ -43,13 +43,15 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     private AdminUserService adminUserService;
     private CategoryRepository categoryRepository;
     private ParticipationRequestRepository requestRepository;
+    private EventMapper eventMapper;
+    private ParticipationRequestMapper participationRequestMapper;
 
     @Override
     public List<EventShortDto> getUsersEvents(GetUserEventsDto dto) {
         User user = adminUserService.getUser(dto.getUserId());
         PageRequest page = PageRequest.of(dto.getFrom() > 0 ? dto.getFrom() / dto.getSize() : 0, dto.getSize());
         return eventRepository.findAllByInitiatorId(user.getId(), page).stream()
-                .map(EventMapper::toEventShortDto)
+                .map(eventMapper::toEventShortDto)
                 .toList();
     }
 
@@ -57,18 +59,18 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     public EventFullDto getUserEventById(Long userId, Long eventId) {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + eventId));
-        return EventMapper.toEventFullDto(event);
+        return eventMapper.toEventFullDto(event);
     }
 
     @Override
     @Transactional
     public EventFullDto addNewEvent(Long userId, NewEventDto eventDto) {
         User user = adminUserService.getUser(userId);
-        Event event = EventMapper.dtoToEvent(eventDto, user);
+        Event event = eventMapper.toEvent(eventDto, user);
 
         eventRepository.save(event);
 
-        return EventMapper.toEventFullDto(event);
+        return eventMapper.toEventFullDto(event);
     }
 
     @Override
@@ -101,7 +103,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
         event.setRequestModeration(updateDto.isRequestModeration());
         event.setInitiator(user);
 
-        return EventMapper.toEventFullDto(eventRepository.save(event));
+        return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -109,7 +111,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
         eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + eventId + " for user " + userId));
         return requestRepository.findByEventId(eventId).stream()
-                .map(ParticipationRequestToDtoMapper::mapToDto)
+                .map(participationRequestMapper::mapToDto)
                 .toList();
     }
 
@@ -140,7 +142,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
 
                 return EventRequestStatusUpdateResult.builder()
                         .confirmedRequests(participation.stream()
-                                .map(ParticipationRequestToDtoMapper::mapToDto).toList())
+                                .map(participationRequestMapper::mapToDto).toList())
                         .build();
             } else {
                 for (ParticipationRequest req : participation) {
@@ -149,7 +151,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
 
                 return EventRequestStatusUpdateResult.builder()
                         .rejectedRequests(participation.stream()
-                                .map(ParticipationRequestToDtoMapper::mapToDto).toList())
+                                .map(participationRequestMapper::mapToDto).toList())
                         .build();
             }
         } else if (diff == 0) {
@@ -187,9 +189,9 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
                     .toList();
 
             res.setConfirmedRequests(updatedRequestsConfirmed.stream()
-                    .map(ParticipationRequestToDtoMapper::mapToDto).toList());
+                    .map(participationRequestMapper::mapToDto).toList());
             res.setRejectedRequests(updatedRequestsRejected.stream()
-                    .map(ParticipationRequestToDtoMapper::mapToDto).toList());
+                    .map(participationRequestMapper::mapToDto).toList());
 
             return res;
         }

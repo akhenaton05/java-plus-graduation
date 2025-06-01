@@ -43,6 +43,7 @@ public class CommentServiceImpl implements CommentService {
     private final EventRepository eventRepository;
 
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
     @Override
     public CommentPagedDto getComments(Long eventId, int page, int size, CommentsOrder sort) {
@@ -67,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
                 .findByEventIdAndStatus(eventId, CommentsStatus.PUBLISHED, pageable);
 
         List<CommentOutputDto> comments = commentPage.getContent().stream()
-                .map(CommentMapper::commentToOutputDto)
+                .map(commentMapper::commentToOutputDto)
                 .collect(Collectors.toList());
 
         return CommentPagedDto.builder()
@@ -87,7 +88,7 @@ public class CommentServiceImpl implements CommentService {
                 .created(LocalDateTime.now())
                 .status(CommentsStatus.PUBLISHED)
                 .build();
-        return CommentMapper.commentToEconomDto(commentRepository.save(comment));
+        return commentMapper.commentToEconomDto(commentRepository.save(comment));
     }
 
     @Override
@@ -99,7 +100,7 @@ public class CommentServiceImpl implements CommentService {
         }
         comment.setText(dto.getText());
         log.info("CommentServiceImpl: Comment for update {}", comment);
-        return CommentMapper.commentToEconomDto(commentRepository.save(comment));
+        return commentMapper.commentToEconomDto(commentRepository.save(comment));
     }
 
     @Override

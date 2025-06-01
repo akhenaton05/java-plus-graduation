@@ -1,24 +1,20 @@
 package ru.practicum.category.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.model.Category;
 
 import java.util.List;
 
-@Component
-public class CategoryDtoMapper {
-    public static CategoryDto mapCategoryToDto(Category cat) {
-        return new CategoryDto(cat.getId(), cat.getName());
-    }
+@Mapper(componentModel = "spring")
+public interface CategoryDtoMapper {
 
-    public static Category mapDtoToCategory(CategoryDto catDto) {
-        return new Category(catDto.getId(), catDto.getName());
-    }
+    CategoryDtoMapper INSTANCE = Mappers.getMapper(CategoryDtoMapper.class);
 
-    public static List<CategoryDto> mapCatListToDtoList(List<Category> cats) {
-        return cats.stream()
-                .map(CategoryDtoMapper::mapCategoryToDto)
-                .toList();
-    }
+    CategoryDto mapCategoryToDto(Category category);
+
+    Category mapDtoToCategory(CategoryDto categoryDto);
+
+    List<CategoryDto> mapCatListToDtoList(List<Category> categories);
 }
