@@ -1,0 +1,23 @@
+spring:
+  cloud:
+    gateway:
+      discovery.locator.enabled: true
+      routes:
+        - id: main_service_route
+          uri: lb://main-service
+          predicates:
+            - Path=/**
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    org.springframework.http.server.reactive: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "env,health,metrics"
