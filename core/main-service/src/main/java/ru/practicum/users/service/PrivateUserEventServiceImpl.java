@@ -80,7 +80,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + eventId));
 
-        if (!Objects.equals(event.getInitiator().getId(), userId)) {
+        if (!Objects.equals(event.getInitiatorId(), userId)) {
             throw new ForbiddenActionException("User is not the event creator");
         }
 
@@ -101,7 +101,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
         updateEventState(event, updateDto.getStateAction());
 
         event.setRequestModeration(updateDto.isRequestModeration());
-        event.setInitiator(user);
+        event.setInitiatorId(user.getId());
 
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }

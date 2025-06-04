@@ -50,9 +50,8 @@ public class Event {
     @Column(name = "request_moderation")
     private boolean requestModeration;
 
-    @ManyToOne
     @JoinColumn(name = "initiator_id")
-    private User initiator;
+    private Long initiatorId;
 
     @Column(name = "creation_date")
     private LocalDateTime createdOn;

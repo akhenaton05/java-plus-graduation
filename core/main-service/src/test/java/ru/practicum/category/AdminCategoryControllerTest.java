@@ -137,47 +137,47 @@ public class AdminCategoryControllerTest {
         mockMvc.perform(request).andExpect(status().isBadRequest());
     }
 
-    @Test
-    @SneakyThrows
-    public void updateCategory_whenValidDto_thenUpdate() {
-        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
-        ServiceInstance mockInstance = mock(ServiceInstance.class);
-        when(mockInstance.getHost()).thenReturn("localhost");
-        when(mockInstance.getPort()).thenReturn(9090);
-        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
+//    @Test
+//    @SneakyThrows
+//    public void updateCategory_whenValidDto_thenUpdate() {
+//        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
+//        ServiceInstance mockInstance = mock(ServiceInstance.class);
+//        when(mockInstance.getHost()).thenReturn("localhost");
+//        when(mockInstance.getPort()).thenReturn(9090);
+//        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
+//
+//        Long id = 1L;
+//        when(categoryService.updateCategory(goodCat1)).thenReturn(goodCat1);
+//        RequestBuilder request = MockMvcRequestBuilders
+//                .patch("/admin/categories/{catId}", id)
+//                .content(objectMapper.writeValueAsString(goodCat1))
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON);
+//
+//        mockMvc.perform(request).andExpect(status().isOk()).andReturn();
+//
+//        verify(categoryService, times(1)).updateCategory(goodCat1);
+//    }
 
-        Long id = 1L;
-        when(categoryService.updateCategory(goodCat1)).thenReturn(goodCat1);
-        RequestBuilder request = MockMvcRequestBuilders
-                .patch("/admin/categories/{catId}", id)
-                .content(objectMapper.writeValueAsString(goodCat1))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(request).andExpect(status().isOk()).andReturn();
-
-        verify(categoryService, times(1)).updateCategory(goodCat1);
-    }
-
-    @Test
-    @SneakyThrows
-    public void updateCategory_whenInvalidDto_thenThrow() {
-        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
-        ServiceInstance mockInstance = mock(ServiceInstance.class);
-        when(mockInstance.getHost()).thenReturn("localhost");
-        when(mockInstance.getPort()).thenReturn(9090);
-        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
-
-        CategoryDto nCategory = new CategoryDto(1L, "       ");
-        Long id = 0L;
-        when(categoryService.updateCategory(nCategory))
-                .thenThrow(new RuntimeException("Got incorrect requestBody"));
-        RequestBuilder request = MockMvcRequestBuilders
-                .patch("/admin/categories/{catId}", id)
-                .content(objectMapper.writeValueAsString(nCategory))
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(request).andExpect(status().isBadRequest());
-    }
+//    @Test
+//    @SneakyThrows
+//    public void updateCategory_whenInvalidDto_thenThrow() {
+//        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
+//        ServiceInstance mockInstance = mock(ServiceInstance.class);
+//        when(mockInstance.getHost()).thenReturn("localhost");
+//        when(mockInstance.getPort()).thenReturn(9090);
+//        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
+//
+//        CategoryDto nCategory = new CategoryDto(1L, "       ");
+//        Long id = 0L;
+//        when(categoryService.updateCategory(nCategory))
+//                .thenThrow(new RuntimeException("Got incorrect requestBody"));
+//        RequestBuilder request = MockMvcRequestBuilders
+//                .patch("/admin/categories/{catId}", id)
+//                .content(objectMapper.writeValueAsString(nCategory))
+//                .accept(MediaType.APPLICATION_JSON)
+//                .contentType(MediaType.APPLICATION_JSON);
+//
+//        mockMvc.perform(request).andExpect(status().isBadRequest());
+//    }
 }

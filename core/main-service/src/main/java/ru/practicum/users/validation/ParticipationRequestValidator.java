@@ -18,7 +18,7 @@ public class ParticipationRequestValidator {
     private final ParticipationRequestRepository requestRepository;
 
     public RuntimeException checkRequest(User user, Event event, long confirmedRequestsCount) {
-        if (event.getInitiator().getId().equals(user.getId())) {
+        if (event.getInitiatorId().equals(user.getId())) {
             return new EventOwnerParticipationException("Event initiator cannot participate in their own event");
         }
 

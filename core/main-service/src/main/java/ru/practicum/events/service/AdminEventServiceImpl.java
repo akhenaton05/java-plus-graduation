@@ -45,6 +45,7 @@ public class AdminEventServiceImpl implements AdminEventService {
             int from,
             int size) {
 
+
         // Создаем объект QEvent для построения запроса
         QEvent event = QEvent.event;
 
@@ -53,7 +54,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         // Фильтрация по пользователям
         if (!CollectionUtils.isEmpty(users)) {
-            builder.and(event.initiator.id.in(users));
+            builder.and(event.initiatorId.in(users));
         }
 
         // Фильтрация по состояниям

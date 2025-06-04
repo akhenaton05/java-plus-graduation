@@ -85,7 +85,7 @@ public class PrivateUserEventsIntegrationTest {
 
         eventRepository.save(event);
 
-        EventFullDto fullEventDto = privateUserEventService.getUserEventById(event.getInitiator().getId(), event.getId());
+        EventFullDto fullEventDto = privateUserEventService.getUserEventById(event.getInitiatorId(), event.getId());
 
         assertAll(
                 () -> assertEquals(event.getTitle(), "New title"),
@@ -103,7 +103,7 @@ public class PrivateUserEventsIntegrationTest {
                 "2025-12-31 15:10:05", location,
                 true, 10, true, "CANCEL_REVIEW", "Title");
 
-        EventFullDto updatedEvent = privateUserEventService.updateUserEvent(event.getInitiator().getId(), event.getId(), updateRequest);
+        EventFullDto updatedEvent = privateUserEventService.updateUserEvent(event.getInitiatorId(), event.getId(), updateRequest);
 
         assertAll(
                 () -> assertEquals(updateRequest.getTitle(), updatedEvent.getTitle()),
