@@ -3,11 +3,13 @@ package ru.practicum.compilations;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.MainService;
@@ -20,15 +22,19 @@ import ru.practicum.compilations.service.CompilationService;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.service.PublicEventsServiceImpl;
+import ru.practicum.user_service.dto.UserShortDto;
+import ru.practicum.user_service.feign.UserClient;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = MainService.class)
+@SpringBootTest(classes = MainService.class, properties = "spring.profiles.active=test")
 @ExtendWith(SpringExtension.class)
 @Transactional(readOnly = true)
 @Slf4j
@@ -43,6 +49,17 @@ public class CompilationIntegrationTest {
     private EventRepository eventRepository;
     @MockBean
     private PublicEventsServiceImpl publicEventsService;
+    @MockBean
+    private UserClient userClient;
+
+    @BeforeEach
+    void setUp() {
+        // Обобщённый мок для UserClient, чтобы покрыть любые ID пользователей
+        when(userClient.getUser(anyLong())).thenAnswer(invocation -> {
+            Long userId = invocation.getArgument(0);
+            return ResponseEntity.ok(new UserShortDto(userId, "Test User " + userId));
+        });
+    }
 
     @Test
     @Transactional
@@ -68,16 +85,13 @@ public class CompilationIntegrationTest {
     @Test
     @Transactional
     public void updatePinnedCompilationTest() {
-        Event event = eventRepository.findById(1L).get();
+        Event event = eventRepository.findById(1L).orElseThrow();
         event.setConfirmedRequests(15);
         event.setViews(15);
 
         when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
 
-        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(
-                null,
-                true,
-                null);
+        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(null, true, null);
         CompilationDto compilation = compilationService.update(1L, updateCompilationRequest);
 
         assertAll(
@@ -90,12 +104,13 @@ public class CompilationIntegrationTest {
     @Test
     @Transactional
     public void updateTitleCompilationTest() {
-        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(
-                null,
-                null,
-                "New title"
-        );
+        Event event = eventRepository.findById(1L).orElseThrow();
+        event.setConfirmedRequests(15);
+        event.setViews(15);
 
+        when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
+
+        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(null, null, "New title");
         CompilationDto compilation = compilationService.update(1L, updateCompilationRequest);
 
         assertAll(
@@ -109,7 +124,7 @@ public class CompilationIntegrationTest {
     @Test
     @Transactional
     public void updateEventsCompilationTest() {
-        Event event = eventRepository.findById(2L).get();
+        Event event = eventRepository.findById(2L).orElseThrow();
         event.setConfirmedRequests(15);
         event.setViews(15);
 
@@ -118,15 +133,11 @@ public class CompilationIntegrationTest {
         Set<Long> events = new HashSet<>();
         events.add(2L);
 
-        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(
-                events,
-                null,
-                null
-        );
-
+        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(events, null, null);
         CompilationDto compilation = compilationService.update(2L, updateCompilationRequest);
         List<Long> eventsId = compilation.getEvents().stream()
-                .map(eventShortDto -> eventShortDto.getId()).toList();
+                .map(eventShortDto -> eventShortDto.getId())
+                .collect(toList());
 
         assertAll(
                 () -> assertEquals(1, compilation.getEvents().size()),
@@ -149,7 +160,7 @@ public class CompilationIntegrationTest {
 
     @Test
     public void getCompilationTest() {
-        Event event = eventRepository.findById(1L).get();
+        Event event = eventRepository.findById(1L).orElseThrow();
         event.setConfirmedRequests(15);
         event.setViews(15);
 
@@ -158,7 +169,7 @@ public class CompilationIntegrationTest {
         CompilationDto compilation = compilationService.getById(1L);
 
         assertAll(
-                () -> assertEquals(1, compilation.getId()),
+                () -> assertEquals(1L, compilation.getId()),
                 () -> assertEquals(1, compilation.getEvents().size())
         );
     }
@@ -167,7 +178,7 @@ public class CompilationIntegrationTest {
     public void getCompilationPinnedTrueTest() {
         Filter params = new Filter(true, 0, 10);
         List<CompilationDto> compilationList = compilationService.get(params);
-        List<Boolean> pinned = compilationList.stream().map(compilation -> compilation.getPinned()).toList();
+        List<Boolean> pinned = compilationList.stream().map(CompilationDto::getPinned).collect(toList());
 
         assertAll(
                 () -> assertFalse(compilationList.isEmpty()),

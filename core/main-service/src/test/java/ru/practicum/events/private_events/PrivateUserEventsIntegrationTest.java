@@ -1,9 +1,12 @@
 package ru.practicum.events.private_events;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,8 @@ import ru.practicum.events.model.Location;
 import ru.practicum.events.model.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.user_service.dto.GetUserEventsDto;
+import ru.practicum.user_service.dto.UserShortDto;
+import ru.practicum.user_service.feign.UserClient;
 import ru.practicum.users.service.PrivateUserEventService;
 
 import java.time.LocalDateTime;
@@ -25,8 +30,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = MainService.class)
+@SpringBootTest(classes = MainService.class, properties = "spring.profiles.active=test")
 @ExtendWith(SpringExtension.class)
 @Transactional(readOnly = true)
 @Rollback(value = false)
@@ -37,9 +44,20 @@ public class PrivateUserEventsIntegrationTest {
     private CategoryServiceImpl categoryService;
     @Autowired
     private EventRepository eventRepository;
+    @MockBean
+    private UserClient userClient; // Добавляем мок для UserClient
 
     private final Location location = new Location(1L, 37, 56);
     private final NewEventDto eventDto = new NewEventDto(6L, "annotation", 1L, "descr", "2024-12-31 15:10:05", location, true, 10, false, "Title");
+
+    @BeforeEach
+    void setUp() {
+        // Обобщённый мок для UserClient, чтобы покрыть любые ID пользователей
+        when(userClient.getUser(anyLong())).thenAnswer(invocation -> {
+            Long userId = invocation.getArgument(0);
+            return ResponseEntity.ok(new UserShortDto(userId, "Test User " + userId));
+        });
+    }
 
     @Test
     void savingNewEvent() {
@@ -78,8 +96,9 @@ public class PrivateUserEventsIntegrationTest {
     }
 
     @Test
+    @Transactional
     void getUserEventById() {
-        Event event =  eventRepository.findById(1L).orElseThrow();
+        Event event = eventRepository.findById(1L).orElseThrow();
         event.setTitle("New title");
         event.setCreatedOn(LocalDateTime.now());
 
@@ -88,7 +107,7 @@ public class PrivateUserEventsIntegrationTest {
         EventFullDto fullEventDto = privateUserEventService.getUserEventById(event.getInitiatorId(), event.getId());
 
         assertAll(
-                () -> assertEquals(event.getTitle(), "New title"),
+                () -> assertEquals("New title", fullEventDto.getTitle()), // Проверяем fullEventDto
                 () -> assertEquals(event.getAnnotation(), fullEventDto.getAnnotation()),
                 () -> assertEquals(event.isPaid(), fullEventDto.isPaid())
         );
@@ -96,7 +115,7 @@ public class PrivateUserEventsIntegrationTest {
 
     @Test
     void updatingEvent() {
-        Event event =  eventRepository.findById(1L).orElseThrow();
+        Event event = eventRepository.findById(1L).orElseThrow();
         event.setState(StateEvent.CANCELED);
         event.setCreatedOn(LocalDateTime.now());
         UpdateEventUserRequest updateRequest = new UpdateEventUserRequest(1L, "annotationannotationannotation", 1, "descrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescr",
