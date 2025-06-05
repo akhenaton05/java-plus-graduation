@@ -8,7 +8,6 @@ import ru.practicum.users.errors.EventOwnerParticipationException;
 import ru.practicum.users.errors.EventParticipationLimitException;
 import ru.practicum.users.errors.NotPublishedEventParticipationException;
 import ru.practicum.users.errors.RepeatParticipationRequestException;
-import ru.practicum.users.model.User;
 import ru.practicum.users.repository.ParticipationRequestRepository;
 
 @Component
@@ -17,8 +16,8 @@ public class ParticipationRequestValidator {
 
     private final ParticipationRequestRepository requestRepository;
 
-    public RuntimeException checkRequest(User user, Event event, long confirmedRequestsCount) {
-        if (event.getInitiatorId().equals(user.getId())) {
+    public RuntimeException checkRequest(Long userId, Event event, long confirmedRequestsCount) {
+        if (event.getInitiatorId().equals(userId)) {
             return new EventOwnerParticipationException("Event initiator cannot participate in their own event");
         }
 
@@ -26,7 +25,7 @@ public class ParticipationRequestValidator {
             return new NotPublishedEventParticipationException("Cannot participate in an unpublished event");
         }
 
-        if (requestRepository.existsByUserIdAndEventId(user.getId(), event.getId())) {
+        if (requestRepository.existsByUserIdAndEventId(userId, event.getId())) {
             return new RepeatParticipationRequestException("User already has a participation request for this event");
         }
 

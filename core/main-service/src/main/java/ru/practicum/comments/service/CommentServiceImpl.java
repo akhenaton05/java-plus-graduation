@@ -18,11 +18,10 @@ import ru.practicum.comments.model.Comment;
 import ru.practicum.comments.model.CommentsOrder;
 import ru.practicum.comments.model.CommentsStatus;
 import ru.practicum.comments.repository.CommentRepository;
-import ru.practicum.errors.AccessDeniedException;
-import ru.practicum.errors.ForbiddenActionException;
+import ru.practicum.user_service.errors.AccessDeniedException;
+import ru.practicum.user_service.errors.ForbiddenActionException;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.service.PublicEventsService;
-import ru.practicum.users.service.AdminUserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,12 +36,8 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
 
-    private final AdminUserService adminUserService;
-
     private final PublicEventsService publicEventsService;
-
     private final EventRepository eventRepository;
-
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
 
@@ -83,7 +78,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentEconomDto addComment(Long userId, CommentDto commentDto) {
         Comment comment = Comment.builder()
-                .user(adminUserService.getUser(userId))
+                .userId(userId)
                 .event(publicEventsService.getEventAnyStatusWithViews(commentDto.getEventId()))
                 .text(commentDto.getText())
                 .created(LocalDateTime.now())
@@ -96,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentEconomDto updateComment(CommentDto dto) {
         Comment comment = getComment(dto.getId());
-        if (!comment.getUser().getId().equals(dto.getUserId())) {
+        if (!comment.getUserId().equals(dto.getUserId())) {
             throw new AccessDeniedException("User " + dto.getUserId() + "can't edit this comment.");
         }
         comment.setText(dto.getText());
@@ -127,7 +122,7 @@ public class CommentServiceImpl implements CommentService {
     public void softDelete(Long userId, Long commentId) {
         Comment comment = getComment(commentId);
 
-        if (!comment.getUser().getId().equals(userId)) {
+        if (!comment.getUserId().equals(userId)) {
             throw new AccessDeniedException("Not enough rights");
         }
 

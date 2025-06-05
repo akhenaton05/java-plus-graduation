@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.config.DateConfig;
+import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.users.model.ParticipationRequestStatus;
 
 import java.time.LocalDateTime;

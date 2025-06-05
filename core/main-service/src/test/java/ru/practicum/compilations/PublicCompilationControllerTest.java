@@ -18,9 +18,9 @@ import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.dto.Filter;
 import ru.practicum.compilations.dto.NewCompilationDto;
 import ru.practicum.compilations.service.CompilationService;
-import ru.practicum.config.StatsClientConfig;
+import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.users.dto.UserShortDto;
+import ru.practicum.user_service.dto.UserShortDto;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;

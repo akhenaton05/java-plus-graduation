@@ -3,7 +3,7 @@ package ru.practicum.users.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.logging.log4j.util.Strings;
-import ru.practicum.users.dto.UserDto;
+import ru.practicum.user_service.dto.UserDto;
 
 public class ValidateUserDtoForUpdate implements ConstraintValidator<NotEmptyUserDto, UserDto> {
     @Override

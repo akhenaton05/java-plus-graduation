@@ -6,19 +6,17 @@ import ru.practicum.comments.dto.CommentEconomDto;
 import ru.practicum.comments.dto.CommentOutputDto;
 import ru.practicum.comments.model.Comment;
 import ru.practicum.events.mapper.EventMapper;
-import ru.practicum.users.model.User;
+import ru.practicum.user_service.dto.UserShortDto;
+import ru.practicum.user_service.feign.UserClient;
 
 @Component
 @RequiredArgsConstructor
 public class CommentMapper {
     private final EventMapper eventMapper;
+    private final UserClient userClient;
 
     public CommentOutputDto commentToOutputDto(Comment comment) {
-        User user = User.builder()
-                .id(comment.getUser().getId())
-                .email(comment.getUser().getEmail())
-                .name(comment.getUser().getName())
-                .build();
+        UserShortDto user = userClient.getUser(comment.getUserId()).getBody();
 
         return CommentOutputDto.builder()
                 .id(comment.getId())
@@ -33,7 +31,7 @@ public class CommentMapper {
     public CommentEconomDto commentToEconomDto(Comment comment) {
         return CommentEconomDto.builder()
                 .id(comment.getId())
-                .userId(comment.getUser().getId())
+                .userId(comment.getUserId())
                 .eventId(comment.getEvent().getId())
                 .text(comment.getText())
                 .created(comment.getCreated())

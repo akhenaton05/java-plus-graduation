@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.config.DateConfig;
-import ru.practicum.users.dto.UserShortDto;
+import ru.practicum.user_service.config.DateConfig;
+import ru.practicum.user_service.dto.UserShortDto;
 
 @Data
 @NoArgsConstructor

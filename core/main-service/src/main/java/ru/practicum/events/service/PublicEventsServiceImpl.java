@@ -9,11 +9,11 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import ru.practicum.config.DateConfig;
-import ru.practicum.config.StatsClientConfig;
+import ru.practicum.user_service.config.DateConfig;
+import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.controller.ClientController;
 import ru.practicum.dto.ReadEndpointHitDto;
-import ru.practicum.errors.EventNotPublishedException;
+import ru.practicum.user_service.errors.EventNotPublishedException;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.events.dto.LookEventDto;
@@ -23,6 +23,7 @@ import ru.practicum.events.model.Event;
 import ru.practicum.events.model.QEvent;
 import ru.practicum.events.model.StateEvent;
 import ru.practicum.events.repository.EventRepository;
+import ru.practicum.user_service.feign.UserClient;
 import ru.practicum.users.model.ParticipationRequestStatus;
 
 import java.time.LocalDateTime;
@@ -36,12 +37,18 @@ public class PublicEventsServiceImpl implements PublicEventsService {
     private final EventRepository eventRepository;
     private final ClientController clientController;
     private final EventMapper eventMapper;
+    private final UserClient userClient;
 
     @Autowired
-    public PublicEventsServiceImpl(EventRepository eventRepository, DiscoveryClient discoveryClient, StatsClientConfig statsClientConfig, EventMapper eventMapper) {
+    public PublicEventsServiceImpl(EventRepository eventRepository,
+                                   DiscoveryClient discoveryClient,
+                                   StatsClientConfig statsClientConfig,
+                                   EventMapper eventMapper,
+                                   UserClient userClient) {
         this.eventRepository = eventRepository;
         this.clientController = new ClientController(discoveryClient, statsClientConfig.getServiceId());
         this.eventMapper = eventMapper;
+        this.userClient = userClient;
     }
 
     @Override

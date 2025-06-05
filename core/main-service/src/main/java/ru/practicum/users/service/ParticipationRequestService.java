@@ -6,11 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.repository.EventRepository;
+import ru.practicum.user_service.dto.UserShortDto;
+import ru.practicum.user_service.feign.UserClient;
 import ru.practicum.users.dto.ParticipationRequestDto;
 import ru.practicum.users.mapper.ParticipationRequestMapper;
 import ru.practicum.users.model.ParticipationRequest;
 import ru.practicum.users.model.ParticipationRequestStatus;
-import ru.practicum.users.model.User;
 import ru.practicum.users.repository.ParticipationRequestRepository;
 import ru.practicum.users.validation.ParticipationRequestValidator;
 
@@ -25,12 +26,12 @@ public class ParticipationRequestService {
 
     private final ParticipationRequestRepository requestRepository;
     private final EventRepository eventRepository;
-    private final AdminUserService adminUserService;
+    private final UserClient userClient;
     private final ParticipationRequestValidator participationRequestValidator;
     private final ParticipationRequestMapper participationRequestMapper;
 
     public List<ParticipationRequestDto> getUserRequests(Long userId) {
-        adminUserService.getUser(userId);
+        userClient.getUser(userId);
         return requestRepository.findByUserId(userId)
                 .stream()
                 .map(participationRequestMapper::mapToDto)
@@ -44,19 +45,19 @@ public class ParticipationRequestService {
 
     @Transactional
     public ParticipationRequestDto addParticipationRequest(Long userId, Long eventId) {
-        User user = adminUserService.getUser(userId);
+        UserShortDto user = userClient.getUser(userId).getBody();
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event with id=" + eventId + " was not found"));
         long confirmedRequestsCount = getConfirmedRequests(eventId);
 
         RuntimeException validationError =
-                participationRequestValidator.checkRequest(user, event, confirmedRequestsCount);
+                participationRequestValidator.checkRequest(user.getId(), event, confirmedRequestsCount);
 
         if (Objects.nonNull(validationError))
             throw validationError;
 
         ParticipationRequest request = new ParticipationRequest();
-        request.setUser(user);
+        request.setUserId(user.getId());
         request.setEvent(event);
         if (event.getParticipantLimit() == 0) {
             request.setStatus(ParticipationRequestStatus.CONFIRMED);

@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.config.DateConfig;
+import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.events.model.Location;
 import ru.practicum.events.validation.TimePresentOrFuture;
 

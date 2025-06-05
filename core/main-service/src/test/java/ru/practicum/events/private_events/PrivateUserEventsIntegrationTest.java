@@ -17,7 +17,7 @@ import ru.practicum.events.model.Event;
 import ru.practicum.events.model.Location;
 import ru.practicum.events.model.StateEvent;
 import ru.practicum.events.repository.EventRepository;
-import ru.practicum.users.dto.GetUserEventsDto;
+import ru.practicum.user_service.dto.GetUserEventsDto;
 import ru.practicum.users.service.PrivateUserEventService;
 
 import java.time.LocalDateTime;

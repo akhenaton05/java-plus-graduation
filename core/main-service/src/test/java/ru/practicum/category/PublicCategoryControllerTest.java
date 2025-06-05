@@ -23,7 +23,7 @@ import ru.practicum.MainService;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.GetCategoriesParams;
 import ru.practicum.category.service.CategoryService;
-import ru.practicum.config.StatsClientConfig;
+import ru.practicum.user_service.config.StatsClientConfig;
 
 import java.util.List;
 

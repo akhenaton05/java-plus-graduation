@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.comments.model.CommentsStatus;
 import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.users.model.User;
+import ru.practicum.user_service.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ public class CommentOutputDto {
 
     private Long id;
 
-    private User user;
+    private UserShortDto user;
 
     private EventShortDto event;
 

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ru.practicum.config.DateConfig;
+import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.events.model.Location;
 import ru.practicum.events.model.StateEvent;
 

@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.MainService;
 import ru.practicum.comments.service.CommentService;
-import ru.practicum.config.StatsClientConfig;
+import ru.practicum.user_service.config.StatsClientConfig;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

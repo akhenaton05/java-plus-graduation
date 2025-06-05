@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.MainService;
 import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.config.StatsClientConfig;
+import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.events.dto.LookEventDto;
@@ -30,7 +30,7 @@ import ru.practicum.events.model.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.service.PublicEventsService;
 import ru.practicum.events.service.PublicEventsServiceImpl;
-import ru.practicum.users.dto.UserShortDto;
+import ru.practicum.user_service.dto.UserShortDto;
 
 import java.util.Arrays;
 import java.util.List;

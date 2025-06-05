@@ -2,7 +2,7 @@ package ru.practicum.events.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ru.practicum.config.DateConfig;
+import ru.practicum.user_service.config.DateConfig;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

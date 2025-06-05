@@ -4,17 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.category.mapper.CategoryDtoMapper;
 import ru.practicum.category.model.Category;
-import ru.practicum.config.DateConfig;
+import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.StateEvent;
-import ru.practicum.users.dto.UserShortDto;
-import ru.practicum.users.mapper.UserMapper;
-import ru.practicum.users.model.User;
-import ru.practicum.users.service.AdminUserService;
-import ru.practicum.users.service.AdminUserServiceImpl;
+import ru.practicum.user_service.dto.UserShortDto;
+import ru.practicum.user_service.feign.UserClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,8 +21,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class EventMapper {
     private final CategoryDtoMapper categoryDtoMapper;
-    private final UserMapper userMapper;
-    private final AdminUserService adminUserService;
+    private final UserClient userClient;
 
     public static NewEventDto toNewEventDto(Event event) {
         return NewEventDto.builder()
@@ -42,7 +38,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static Event dtoToEvent(NewEventDto dto, User user) {
+    public static Event dtoToEvent(NewEventDto dto, Long userId) {
         Category category = new Category();
         category.setId((long) dto.getCategory());
 
@@ -58,7 +54,7 @@ public class EventMapper {
                 .paid(dto.isPaid())
                 .participantLimit(Objects.nonNull(dto.getParticipantLimit()) ? dto.getParticipantLimit() : 0)
                 .requestModeration(Objects.nonNull(dto.getRequestModeration()) ? dto.getRequestModeration() : true)
-                .initiatorId(user.getId())
+                .initiatorId(userId)
                 .createdOn(LocalDateTime.now())
                 .publishedOn(LocalDateTime.now())
                 .state(StateEvent.PENDING)
@@ -71,7 +67,7 @@ public class EventMapper {
                 null :
                 event.getPublishedOn().format(DateConfig.FORMATTER);
 
-        User user = adminUserService.getUser(event.getInitiatorId());
+        UserShortDto dto = userClient.getUser(event.getInitiatorId()).getBody();
 
         return EventFullDto.builder()
                 .id(event.getId())
@@ -79,7 +75,7 @@ public class EventMapper {
                 .category(categoryDtoMapper.mapCategoryToDto(event.getCategory()))
                 .confirmedRequests((Objects.isNull(event.getConfirmedRequests())) ? 0 : event.getConfirmedRequests())
                 .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
-                .initiator(new UserShortDto(user.getId(), user.getName()))
+                .initiator(dto)
                 .paid(event.isPaid())
                 .title(event.getTitle())
                 .views((Objects.isNull(event.getViews())) ? 0 : event.getViews())
@@ -94,7 +90,7 @@ public class EventMapper {
     }
 
     public EventShortDto toEventShortDto(Event event) {
-        User user = adminUserService.getUser(event.getInitiatorId());
+        UserShortDto dto = userClient.getUser(event.getInitiatorId()).getBody();
 
         return EventShortDto.builder()
                 .id(event.getId())
@@ -102,7 +98,7 @@ public class EventMapper {
                 .category(categoryDtoMapper.mapCategoryToDto(event.getCategory()))
                 .confirmedRequests((Objects.isNull(event.getConfirmedRequests())) ? 0 : event.getConfirmedRequests())
                 .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
-                .initiator(new UserShortDto(user.getId(), user.getName()))
+                .initiator(dto)
                 .paid(event.isPaid())
                 .title(event.getTitle())
                 .views((Objects.isNull(event.getViews())) ? 0 : event.getViews())

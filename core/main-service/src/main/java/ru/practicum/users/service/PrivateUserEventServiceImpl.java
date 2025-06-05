@@ -7,8 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.repository.CategoryRepository;
-import ru.practicum.config.DateConfig;
-import ru.practicum.errors.ForbiddenActionException;
+import ru.practicum.user_service.config.DateConfig;
+import ru.practicum.user_service.errors.ForbiddenActionException;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.events.dto.NewEventDto;
@@ -17,15 +17,16 @@ import ru.practicum.events.mapper.EventMapper;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.StateEvent;
 import ru.practicum.events.repository.EventRepository;
+import ru.practicum.user_service.dto.GetUserEventsDto;
+import ru.practicum.user_service.dto.UserShortDto;
+import ru.practicum.user_service.feign.UserClient;
 import ru.practicum.users.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.users.dto.EventRequestStatusUpdateResult;
-import ru.practicum.users.dto.GetUserEventsDto;
 import ru.practicum.users.dto.ParticipationRequestDto;
 import ru.practicum.users.mapper.ParticipationRequestMapper;
 import ru.practicum.users.model.ParticipationRequest;
 import ru.practicum.users.model.ParticipationRequestStatus;
 import ru.practicum.users.model.RequestUpdateStatus;
-import ru.practicum.users.model.User;
 import ru.practicum.users.repository.ParticipationRequestRepository;
 
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     private EventRepository eventRepository;
-    private AdminUserService adminUserService;
+    private UserClient userClient;
     private CategoryRepository categoryRepository;
     private ParticipationRequestRepository requestRepository;
     private EventMapper eventMapper;
@@ -48,7 +49,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
 
     @Override
     public List<EventShortDto> getUsersEvents(GetUserEventsDto dto) {
-        User user = adminUserService.getUser(dto.getUserId());
+        UserShortDto user =  userClient.getUser(dto.getUserId()).getBody();
         PageRequest page = PageRequest.of(dto.getFrom() > 0 ? dto.getFrom() / dto.getSize() : 0, dto.getSize());
         return eventRepository.findAllByInitiatorId(user.getId(), page).stream()
                 .map(eventMapper::toEventShortDto)
@@ -65,9 +66,11 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     @Override
     @Transactional
     public EventFullDto addNewEvent(Long userId, NewEventDto eventDto) {
-        User user = adminUserService.getUser(userId);
-        Event event = eventMapper.dtoToEvent(eventDto, user);
-
+        log.info("IN ADD NEW EVENT");
+        UserShortDto user =  userClient.getUser(userId).getBody();
+        log.info("GOT user = {}", user);
+        Event event = eventMapper.dtoToEvent(eventDto, user.getId());
+        log.info("EVENT MAPPED{}", event);
         eventRepository.save(event);
 
         return eventMapper.toEventFullDto(event);
@@ -76,7 +79,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     @Override
     @Transactional
     public EventFullDto updateUserEvent(Long userId, Long eventId, UpdateEventUserRequest updateDto) {
-        User user = adminUserService.getUser(userId);
+        UserShortDto user =  userClient.getUser(userId).getBody();
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + eventId));
 
@@ -118,7 +121,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     @Override
     @Transactional
     public EventRequestStatusUpdateResult updateUserEventRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
-        User user = adminUserService.getUser(userId);
+        UserShortDto user =  userClient.getUser(userId).getBody();
         Event event = getEventWithConfirmedRequests(eventId);
 
         List<ParticipationRequest> participation = requestRepository.findByIds(request.getRequestIds());

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.category.model.Category;
-import ru.practicum.users.model.User;
 
 import java.time.LocalDateTime;
 

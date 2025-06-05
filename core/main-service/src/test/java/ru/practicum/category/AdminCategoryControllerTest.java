@@ -22,7 +22,7 @@ import ru.practicum.MainService;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.service.CategoryService;
-import ru.practicum.config.StatsClientConfig;
+import ru.practicum.user_service.config.StatsClientConfig;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;

@@ -20,6 +20,7 @@ import ru.practicum.events.model.QEvent;
 import ru.practicum.events.model.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.validation.AdminEventValidator;
+import ru.practicum.user_service.feign.UserClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final EventMapper eventMapper;
+    private final UserClient userClient;
 
     @Override
     public List<EventFullDto> getEvents(

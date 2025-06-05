@@ -9,8 +9,8 @@ import ru.practicum.comments.model.Comment;
 import ru.practicum.comments.model.CommentsStatus;
 import ru.practicum.comments.repository.CommentRepository;
 import ru.practicum.comments.service.CommentService;
-import ru.practicum.errors.AccessDeniedException;
-import ru.practicum.errors.ForbiddenActionException;
+import ru.practicum.user_service.errors.AccessDeniedException;
+import ru.practicum.user_service.errors.ForbiddenActionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

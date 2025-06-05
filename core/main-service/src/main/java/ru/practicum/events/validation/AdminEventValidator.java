@@ -1,6 +1,6 @@
 package ru.practicum.events.validation;
 
-import ru.practicum.errors.ForbiddenActionException;
+import ru.practicum.user_service.errors.ForbiddenActionException;
 import ru.practicum.events.dto.UpdateEventAdminRequest;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.EventStateAction;

@@ -15,14 +15,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.MainService;
 import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.config.StatsClientConfig;
+import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.dto.UpdateEventUserRequest;
 import ru.practicum.events.model.Location;
 import ru.practicum.events.model.StateEvent;
-import ru.practicum.users.dto.UserShortDto;
+import ru.practicum.user_service.dto.UserShortDto;
 import ru.practicum.users.service.PrivateUserEventService;
 
 import java.nio.charset.StandardCharsets;

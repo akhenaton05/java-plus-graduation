@@ -3,7 +3,7 @@ package ru.practicum.events.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.apache.logging.log4j.util.Strings;
-import ru.practicum.config.DateConfig;
+import ru.practicum.user_service.config.DateConfig;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
