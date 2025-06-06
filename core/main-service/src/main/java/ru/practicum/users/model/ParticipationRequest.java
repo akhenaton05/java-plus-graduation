@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.events.model.Event;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
 
 import java.time.LocalDateTime;
 

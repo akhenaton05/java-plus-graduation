@@ -8,13 +8,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.GetCategoriesParams;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.mapper.CategoryDtoMapper;
 import ru.practicum.category.mapper.NewCategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
+import ru.practicum.category_service.dto.CategoryDto;
 
 import java.util.List;
 

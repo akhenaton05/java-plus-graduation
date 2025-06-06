@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.GetCategoriesParams;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.model.Category;

@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.category.mapper.CategoryDtoMapper;
 import ru.practicum.category.model.Category;
+import ru.practicum.event_service.dto.EventFullDto;
+import ru.practicum.event_service.dto.EventShortDto;
+import ru.practicum.event_service.dto.LocationDto;
+import ru.practicum.event_service.dto.NewEventDto;
+import ru.practicum.events.model.Location;
 import ru.practicum.user_service.config.DateConfig;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.model.Event;
-import ru.practicum.events.model.StateEvent;
+import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.user_service.dto.UserShortDto;
 import ru.practicum.user_service.feign.UserClient;
 
@@ -30,7 +32,7 @@ public class EventMapper {
                 .category(event.getCategory().getId())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate().format(DateConfig.FORMATTER))
-                .location(event.getLocation())
+                .location(new LocationDto(event.getLocation().getId(), event.getLocation().getLat(), event.getLocation().getLon()))
                 .paid(event.isPaid())
                 .participantLimit(event.getParticipantLimit())
                 .requestModeration(event.isRequestModeration())
@@ -50,7 +52,7 @@ public class EventMapper {
                 .category(category)
                 .description(dto.getDescription())
                 .eventDate(eventTime)
-                .location(dto.getLocation())
+                .location(new Location(dto.getLocation().getId(), dto.getLocation().getLat(), dto.getLocation().getLon()))
                 .paid(dto.isPaid())
                 .participantLimit(Objects.nonNull(dto.getParticipantLimit()) ? dto.getParticipantLimit() : 0)
                 .requestModeration(Objects.nonNull(dto.getRequestModeration()) ? dto.getRequestModeration() : true)
@@ -81,7 +83,7 @@ public class EventMapper {
                 .views((Objects.isNull(event.getViews())) ? 0 : event.getViews())
                 .createdOn(event.getCreatedOn().format(DateConfig.FORMATTER))
                 .description(event.getDescription())
-                .location(event.getLocation())
+                .location(new LocationDto(event.getLocation().getId(), event.getLocation().getLat(), event.getLocation().getLon()))
                 .participantLimit(event.getParticipantLimit())
                 .publishedOn(publishedOn)
                 .requestModeration(event.isRequestModeration())

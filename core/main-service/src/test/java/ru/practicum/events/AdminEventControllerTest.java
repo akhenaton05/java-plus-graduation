@@ -17,7 +17,7 @@ import ru.practicum.MainService;
 import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.events.dto.EventFullDto;
 import ru.practicum.events.dto.UpdateEventAdminRequest;
-import ru.practicum.events.model.StateEvent;
+import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.service.AdminEventService;
 
 import java.nio.charset.StandardCharsets;

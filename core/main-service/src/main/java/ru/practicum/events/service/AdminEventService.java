@@ -1,7 +1,7 @@
 package ru.practicum.events.service;
 
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.UpdateEventAdminRequest;
+import ru.practicum.event_service.dto.EventFullDto;
+import ru.practicum.event_service.dto.UpdateEventAdminRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;

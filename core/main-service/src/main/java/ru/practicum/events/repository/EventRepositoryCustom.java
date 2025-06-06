@@ -4,7 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ru.practicum.events.model.Event;
-import ru.practicum.users.model.ParticipationRequestStatus;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
 
 import java.util.List;
 

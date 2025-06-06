@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.QEvent;
-import ru.practicum.users.model.ParticipationRequestStatus;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
 import ru.practicum.users.model.QParticipationRequest;
 
 import java.util.ArrayList;

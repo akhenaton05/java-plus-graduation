@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.comments.model.CommentsStatus;
-import ru.practicum.events.dto.EventShortDto;
+import ru.practicum.event_service.dto.EventShortDto;
 import ru.practicum.user_service.dto.UserShortDto;
 
 import java.time.LocalDateTime;

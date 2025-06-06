@@ -3,7 +3,7 @@ package ru.practicum.users.validation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.events.model.Event;
-import ru.practicum.events.model.StateEvent;
+import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.users.errors.EventOwnerParticipationException;
 import ru.practicum.users.errors.EventParticipationLimitException;
 import ru.practicum.users.errors.NotPublishedEventParticipationException;

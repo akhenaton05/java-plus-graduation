@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.users.model.ParticipationRequest;
-import ru.practicum.users.model.ParticipationRequestStatus;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
 
 import java.util.List;
 import java.util.Optional;

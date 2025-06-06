@@ -1,10 +1,10 @@
 package ru.practicum.events.validation;
 
-import ru.practicum.user_service.errors.ForbiddenActionException;
-import ru.practicum.events.dto.UpdateEventAdminRequest;
+import ru.practicum.event_service.dto.UpdateEventAdminRequest;
 import ru.practicum.events.model.Event;
-import ru.practicum.events.model.EventStateAction;
-import ru.practicum.events.model.StateEvent;
+import ru.practicum.user_service.errors.ForbiddenActionException;
+import ru.practicum.event_service.entity.EventStateAction;
+import ru.practicum.event_service.entity.StateEvent;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

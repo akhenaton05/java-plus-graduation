@@ -1,9 +1,10 @@
 package ru.practicum.events.service;
 
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.LookEventDto;
-import ru.practicum.events.dto.SearchEventsParams;
+
+import ru.practicum.event_service.dto.EventFullDto;
+import ru.practicum.event_service.dto.EventShortDto;
+import ru.practicum.event_service.dto.LookEventDto;
+import ru.practicum.event_service.dto.SearchEventsParams;
 import ru.practicum.events.model.Event;
 
 import java.time.LocalDateTime;
@@ -21,4 +22,5 @@ public interface PublicEventsService {
 
     Event getEventAnyStatusWithViews(Long id);
 
+    EventFullDto getEventById(Long id);
 }

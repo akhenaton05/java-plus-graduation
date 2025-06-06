@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.users.dto.ParticipationRequestDto;
-import ru.practicum.users.model.ParticipationRequestStatus;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
 import ru.practicum.users.service.ParticipationRequestService;
 
 import java.time.LocalDateTime;

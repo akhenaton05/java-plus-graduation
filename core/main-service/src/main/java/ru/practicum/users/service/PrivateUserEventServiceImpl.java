@@ -7,15 +7,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.repository.CategoryRepository;
+import ru.practicum.event_service.dto.EventFullDto;
+import ru.practicum.event_service.dto.EventShortDto;
+import ru.practicum.event_service.dto.NewEventDto;
+import ru.practicum.event_service.dto.UpdateEventUserRequest;
+import ru.practicum.events.model.Location;
 import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.user_service.errors.ForbiddenActionException;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.NewEventDto;
-import ru.practicum.events.dto.UpdateEventUserRequest;
 import ru.practicum.events.mapper.EventMapper;
 import ru.practicum.events.model.Event;
-import ru.practicum.events.model.StateEvent;
+import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.user_service.dto.GetUserEventsDto;
 import ru.practicum.user_service.dto.UserShortDto;
@@ -25,8 +26,8 @@ import ru.practicum.users.dto.EventRequestStatusUpdateResult;
 import ru.practicum.users.dto.ParticipationRequestDto;
 import ru.practicum.users.mapper.ParticipationRequestMapper;
 import ru.practicum.users.model.ParticipationRequest;
-import ru.practicum.users.model.ParticipationRequestStatus;
-import ru.practicum.users.model.RequestUpdateStatus;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
+import ru.practicum.request_service.entity.RequestUpdateStatus;
 import ru.practicum.users.repository.ParticipationRequestRepository;
 
 import java.time.LocalDateTime;
@@ -94,7 +95,11 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
         Optional.ofNullable(updateDto.getAnnotation()).ifPresent(event::setAnnotation);
         Optional.ofNullable(updateDto.getDescription()).ifPresent(event::setDescription);
         Optional.ofNullable(updateDto.getEventDate()).map(this::parseEventDate).ifPresent(event::setEventDate);
-        Optional.ofNullable(updateDto.getLocation()).ifPresent(event::setLocation);
+        Optional.ofNullable(updateDto.getLocation())
+                .ifPresent(dto -> event.setLocation(Location.builder()
+                        .lat(dto.getLat())
+                        .lon(dto.getLon())
+                        .build()));
 
         if (updateDto.getCategory() != 0) {
             event.setCategory(categoryRepository.findById((long) updateDto.getCategory())

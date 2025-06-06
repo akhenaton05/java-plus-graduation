@@ -18,7 +18,7 @@ import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.dto.UpdateEventUserRequest;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.Location;
-import ru.practicum.events.model.StateEvent;
+import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.user_service.dto.GetUserEventsDto;
 import ru.practicum.user_service.dto.UserShortDto;

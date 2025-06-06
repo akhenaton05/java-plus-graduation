@@ -9,22 +9,22 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import ru.practicum.event_service.dto.EventFullDto;
+import ru.practicum.event_service.dto.EventShortDto;
+import ru.practicum.event_service.dto.LookEventDto;
+import ru.practicum.event_service.dto.SearchEventsParams;
 import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.controller.ClientController;
 import ru.practicum.dto.ReadEndpointHitDto;
 import ru.practicum.user_service.errors.EventNotPublishedException;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.LookEventDto;
-import ru.practicum.events.dto.SearchEventsParams;
 import ru.practicum.events.mapper.EventMapper;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.QEvent;
-import ru.practicum.events.model.StateEvent;
+import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.user_service.feign.UserClient;
-import ru.practicum.users.model.ParticipationRequestStatus;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -77,6 +77,12 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         }
         event.setViews(getEventsViews(event.getId(), event.getPublishedOn()));
         return event;
+    }
+
+    @Override
+    public EventFullDto getEventById(Long id) {
+        return eventMapper.toEventFullDto(eventRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Event with " + id + " not found")));
     }
 
     public List<Event> getEventsByListIds(List<Long> ids) {

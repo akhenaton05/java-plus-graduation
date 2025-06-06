@@ -11,7 +11,7 @@ import ru.practicum.user_service.feign.UserClient;
 import ru.practicum.users.dto.ParticipationRequestDto;
 import ru.practicum.users.mapper.ParticipationRequestMapper;
 import ru.practicum.users.model.ParticipationRequest;
-import ru.practicum.users.model.ParticipationRequestStatus;
+import ru.practicum.request_service.entity.ParticipationRequestStatus;
 import ru.practicum.users.repository.ParticipationRequestRepository;
 import ru.practicum.users.validation.ParticipationRequestValidator;
 

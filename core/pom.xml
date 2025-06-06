@@ -13,6 +13,7 @@
         <module>main-service</module>
         <module>interaction-api</module>
         <module>user-service</module>
+        <module>request-service</module>
     </modules>
 
     <artifactId>core</artifactId>

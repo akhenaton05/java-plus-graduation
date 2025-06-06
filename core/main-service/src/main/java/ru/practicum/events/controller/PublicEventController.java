@@ -8,12 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.LookEventDto;
-import ru.practicum.events.dto.SearchEventsParams;
+import ru.practicum.event_service.dto.EventFullDto;
+import ru.practicum.event_service.dto.EventShortDto;
+import ru.practicum.event_service.dto.LookEventDto;
+import ru.practicum.event_service.dto.SearchEventsParams;
 import ru.practicum.events.service.PublicEventsService;
-import ru.practicum.events.validation.SearchParamsValidator;
+import ru.practicum.event_service.validation.SearchParamsValidator;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +27,7 @@ import java.util.List;
 public class PublicEventController {
 
     private final PublicEventsService publicEventsService;
+    private final SearchParamsValidator searchParamsValidator;
 
     @GetMapping
     public ResponseEntity<List<EventShortDto>>
@@ -49,6 +50,7 @@ public class PublicEventController {
         SearchEventsParams searchEventsParams =
                 new SearchEventsParams(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
         log.info("\nPublicEventController.getFilteredEvents {}", searchEventsParams);
+
         SearchParamsValidator.validateSearchParams(searchEventsParams);
         List<EventShortDto> result = publicEventsService.getFilteredEvents(searchEventsParams, lookEventDto);
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -67,6 +69,14 @@ public class PublicEventController {
         log.info("\nPublicEventController.getEventInfo accepted {}", lookEventDto);
 
         EventFullDto eventFullDto = publicEventsService.getEventInfo(lookEventDto);
+        return ResponseEntity.status(HttpStatus.OK).body(eventFullDto);
+    }
+
+    @GetMapping("/by-id/{id}")
+    //Метод для Feign клиента, без регистрации просмотра пользователем
+    public ResponseEntity<EventFullDto> getEventById(@PathVariable @Min(value = 1, message = "ID must be positive") Long id) {
+        log.info("\nPNew get event request for id {}", id);
+        EventFullDto eventFullDto = publicEventsService.getEventById(id);
         return ResponseEntity.status(HttpStatus.OK).body(eventFullDto);
     }
 }

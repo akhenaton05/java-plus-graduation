@@ -7,7 +7,7 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.model.Compilation;
-import ru.practicum.events.dto.EventShortDto;
+import ru.practicum.event_service.dto.EventShortDto;
 
 import java.util.HashMap;
 import java.util.List;
