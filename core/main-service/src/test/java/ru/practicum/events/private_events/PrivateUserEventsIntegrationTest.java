@@ -12,10 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.MainService;
 import ru.practicum.category.service.CategoryServiceImpl;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.NewEventDto;
-import ru.practicum.events.dto.UpdateEventUserRequest;
+import ru.practicum.event_service.dto.*;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.Location;
 import ru.practicum.event_service.entity.StateEvent;
@@ -28,8 +25,7 @@ import ru.practicum.users.service.PrivateUserEventService;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +43,7 @@ public class PrivateUserEventsIntegrationTest {
     @MockBean
     private UserClient userClient; // Добавляем мок для UserClient
 
-    private final Location location = new Location(1L, 37, 56);
+    private final LocationDto location = new LocationDto(1L, 37, 56);
     private final NewEventDto eventDto = new NewEventDto(6L, "annotation", 1L, "descr", "2024-12-31 15:10:05", location, true, 10, false, "Title");
 
     @BeforeEach
@@ -130,7 +126,7 @@ public class PrivateUserEventsIntegrationTest {
                 () -> assertEquals(updateRequest.getCategory(), updatedEvent.getCategory().getId()),
                 () -> assertEquals(updateRequest.getDescription(), updatedEvent.getDescription()),
                 () -> assertEquals(updateRequest.getLocation(), updatedEvent.getLocation()),
-                () -> assertEquals(updatedEvent.isPaid(), true),
+                () -> assertTrue(updatedEvent.isPaid()),
                 () -> assertEquals(event.getParticipantLimit(), updatedEvent.getParticipantLimit()),
                 () -> assertEquals(updateRequest.isRequestModeration(), updatedEvent.isRequestModeration()),
                 () -> assertEquals(updateRequest.getTitle(), updatedEvent.getTitle())

@@ -18,8 +18,8 @@ import ru.practicum.compilations.dto.CompilationDto;
 import ru.practicum.compilations.dto.NewCompilationDto;
 import ru.practicum.compilations.dto.UpdateCompilationRequest;
 import ru.practicum.compilations.service.CompilationService;
+import ru.practicum.event_service.dto.EventShortDto;
 import ru.practicum.user_service.config.StatsClientConfig;
-import ru.practicum.events.dto.EventShortDto;
 import ru.practicum.user_service.dto.UserShortDto;
 
 import java.nio.charset.StandardCharsets;

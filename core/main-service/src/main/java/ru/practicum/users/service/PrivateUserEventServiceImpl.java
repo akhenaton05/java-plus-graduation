@@ -12,6 +12,10 @@ import ru.practicum.event_service.dto.EventShortDto;
 import ru.practicum.event_service.dto.NewEventDto;
 import ru.practicum.event_service.dto.UpdateEventUserRequest;
 import ru.practicum.events.model.Location;
+import ru.practicum.request_service.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.request_service.dto.EventRequestStatusUpdateResult;
+import ru.practicum.request_service.dto.ParticipationRequestDto;
+import ru.practicum.request_service.feign.RequestClient;
 import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.user_service.errors.ForbiddenActionException;
 import ru.practicum.events.mapper.EventMapper;
@@ -21,14 +25,8 @@ import ru.practicum.events.repository.EventRepository;
 import ru.practicum.user_service.dto.GetUserEventsDto;
 import ru.practicum.user_service.dto.UserShortDto;
 import ru.practicum.user_service.feign.UserClient;
-import ru.practicum.users.dto.EventRequestStatusUpdateRequest;
-import ru.practicum.users.dto.EventRequestStatusUpdateResult;
-import ru.practicum.users.dto.ParticipationRequestDto;
-import ru.practicum.users.mapper.ParticipationRequestMapper;
-import ru.practicum.users.model.ParticipationRequest;
 import ru.practicum.request_service.entity.ParticipationRequestStatus;
 import ru.practicum.request_service.entity.RequestUpdateStatus;
-import ru.practicum.users.repository.ParticipationRequestRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,9 +42,8 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     private EventRepository eventRepository;
     private UserClient userClient;
     private CategoryRepository categoryRepository;
-    private ParticipationRequestRepository requestRepository;
+    private RequestClient requestClient;
     private EventMapper eventMapper;
-    private ParticipationRequestMapper participationRequestMapper;
 
     @Override
     public List<EventShortDto> getUsersEvents(GetUserEventsDto dto) {
@@ -118,9 +115,7 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     public List<ParticipationRequestDto> getUserEventRequests(Long userId, Long eventId) {
         eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id: " + eventId + " for user " + userId));
-        return requestRepository.findByEventId(eventId).stream()
-                .map(participationRequestMapper::mapToDto)
-                .toList();
+        return requestClient.findRequestsByEventId(eventId).getBody();
     }
 
     @Override
@@ -128,9 +123,9 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     public EventRequestStatusUpdateResult updateUserEventRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
         UserShortDto user =  userClient.getUser(userId).getBody();
         Event event = getEventWithConfirmedRequests(eventId);
-
-        List<ParticipationRequest> participation = requestRepository.findByIds(request.getRequestIds());
-        for (ParticipationRequest req : participation) {
+        log.info("1");
+        List<ParticipationRequestDto> participation = requestClient.findByRequestIds(request.getRequestIds()).getBody();
+        for (ParticipationRequestDto req : participation) {
             if (!req.getStatus().equals(ParticipationRequestStatus.PENDING)) {
                 throw new ForbiddenActionException("request status should be PENDING");
             }
@@ -139,27 +134,28 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
         int partLimit = event.getParticipantLimit();
         int confPart = Objects.nonNull(event.getConfirmedRequests()) ? event.getConfirmedRequests() : 0;
         int diff = partLimit - confPart;
-
+        log.info("2");
         if (diff >= request.getRequestIds().size()) {
-            requestRepository.updateStatusByIds(ParticipationRequestStatus.valueOf(request.getStatus()), request.getRequestIds());
+            log.info("BEGORE");
+            requestClient.updateStatusByIds(request);
+            log.info("AFTER");
+//            requestRepository.updateStatusByIds(ParticipationRequestStatus.valueOf(request.getStatus()), request.getRequestIds());
             if (RequestUpdateStatus.valueOf(request.getStatus()).equals(RequestUpdateStatus.CONFIRMED)) {
 
-                for (ParticipationRequest req : participation) {
+                for (ParticipationRequestDto req : participation) {
                     req.setStatus(ParticipationRequestStatus.CONFIRMED);
                 }
 
                 return EventRequestStatusUpdateResult.builder()
-                        .confirmedRequests(participation.stream()
-                                .map(participationRequestMapper::mapToDto).toList())
+                        .confirmedRequests(participation)
                         .build();
             } else {
-                for (ParticipationRequest req : participation) {
+                for (ParticipationRequestDto req : participation) {
                     req.setStatus(ParticipationRequestStatus.REJECTED);
                 }
 
                 return EventRequestStatusUpdateResult.builder()
-                        .rejectedRequests(participation.stream()
-                                .map(participationRequestMapper::mapToDto).toList())
+                        .rejectedRequests(participation)
                         .build();
             }
         } else if (diff == 0) {
@@ -172,12 +168,16 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
                     rejected.add(request.getRequestIds().get(i));
                 } else confirmed.add(request.getRequestIds().get(i));
             }
-            requestRepository.updateStatusByIds(ParticipationRequestStatus.CONFIRMED, confirmed);
-            requestRepository.updateStatusByIds(ParticipationRequestStatus.REJECTED, rejected);
+
+            requestClient.updateStatusByIds(new EventRequestStatusUpdateRequest(confirmed, ParticipationRequestStatus.CONFIRMED.toString()));
+            requestClient.updateStatusByIds(new EventRequestStatusUpdateRequest(rejected, ParticipationRequestStatus.REJECTED.toString()));
+
+//            requestRepository.updateStatusByIds(ParticipationRequestStatus.CONFIRMED, confirmed);
+//            requestRepository.updateStatusByIds(ParticipationRequestStatus.REJECTED, rejected);
 
             EventRequestStatusUpdateResult res = new EventRequestStatusUpdateResult();
 
-            for (ParticipationRequest req : participation) {
+            for (ParticipationRequestDto req : participation) {
                 for (Long id : confirmed) {
                     if (Objects.equals(req.getId(), id)) {
                         req.setStatus(ParticipationRequestStatus.CONFIRMED);
@@ -186,20 +186,18 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
                 req.setStatus(ParticipationRequestStatus.CANCELED);
             }
 
-            List<ParticipationRequest> updatedRequestsConfirmed = participation.stream()
+            List<ParticipationRequestDto> updatedRequestsConfirmed = participation.stream()
                     .filter(req -> confirmed.contains(req.getId()))
                     .peek(req -> req.setStatus(ParticipationRequestStatus.CONFIRMED))
                     .toList();
 
-            List<ParticipationRequest> updatedRequestsRejected = participation.stream()
+            List<ParticipationRequestDto> updatedRequestsRejected = participation.stream()
                     .filter(req -> rejected.contains(req.getId()))
                     .peek(req -> req.setStatus(ParticipationRequestStatus.REJECTED))
                     .toList();
 
-            res.setConfirmedRequests(updatedRequestsConfirmed.stream()
-                    .map(participationRequestMapper::mapToDto).toList());
-            res.setRejectedRequests(updatedRequestsRejected.stream()
-                    .map(participationRequestMapper::mapToDto).toList());
+            res.setConfirmedRequests(updatedRequestsConfirmed);
+            res.setRejectedRequests(updatedRequestsRejected);
 
             return res;
         }

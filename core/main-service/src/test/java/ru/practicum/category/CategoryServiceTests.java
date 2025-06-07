@@ -14,6 +14,7 @@ import ru.practicum.category.dto.GetCategoriesParams;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.service.CategoryService;
+import ru.practicum.category_service.dto.CategoryDto;
 
 import java.util.List;
 

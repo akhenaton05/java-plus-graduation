@@ -131,22 +131,25 @@ public class PublicEventsServiceImpl implements PublicEventsService {
 
         BooleanBuilder builder = new BooleanBuilder();
 
+        log.info("1");
         // Добавляем условия отбора по контексту
         if (!Strings.isEmpty(searchEventsParams.getText())) {
             builder.or(QEvent.event.annotation.containsIgnoreCase(searchEventsParams.getText()))
                     .or(QEvent.event.description.containsIgnoreCase(searchEventsParams.getText()));
         }
-
+        log.info("2");
         // Добавляем отбор по статусу PUBLISHED
         builder.and(QEvent.event.state.eq(StateEvent.PUBLISHED));
         // ... и по списку категорий
         if (!CollectionUtils.isEmpty(searchEventsParams.getCategories()))
             builder.and(QEvent.event.category.id.in(searchEventsParams.getCategories()));
 
+        log.info("3");
         // ... и еще по признаку платные/бесплатные
         if (searchEventsParams.getPaid() != null)
             builder.and(QEvent.event.paid.eq(searchEventsParams.getPaid()));
 
+        log.info("4");
         // Добавляем условие диапазона дат
         LocalDateTime start;
         LocalDateTime end;
@@ -156,6 +159,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         } else {
             start = LocalDateTime.parse(searchEventsParams.getRangeStart(), DateConfig.FORMATTER);
         }
+        log.info("5");
         if (Objects.isNull(searchEventsParams.getRangeEnd())) {
             builder.and(QEvent.event.eventDate.goe(start));
         } else {
@@ -163,12 +167,15 @@ public class PublicEventsServiceImpl implements PublicEventsService {
             builder.and(QEvent.event.eventDate.between(start, end));
         }
 
+        log.info("6");
         List<Event> events = eventRepository.searchEvents(builder, ParticipationRequestStatus.CONFIRMED,
                 searchEventsParams.getOnlyAvailable(), searchEventsParams.getFrom(), searchEventsParams.getSize());
+        log.info("7");
         if (events.isEmpty()) {
             clientController.saveView(lookEventDto.getIp(), "/events");
             return List.of();
         }
+        log.info("8");
 
         log.info("PublicEventsServiceImpl.getFilteredEvents: events {}", events);
         // Если не было установлено rangeEnd, устанавливаем

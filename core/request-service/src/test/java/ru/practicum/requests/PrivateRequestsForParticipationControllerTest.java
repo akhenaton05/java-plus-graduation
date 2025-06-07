@@ -1,4 +1,4 @@
-package ru.practicum.users;
+package ru.practicum.requests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -13,9 +13,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.users.dto.ParticipationRequestDto;
+import ru.practicum.request_service.dto.ParticipationRequestDto;
 import ru.practicum.request_service.entity.ParticipationRequestStatus;
-import ru.practicum.users.service.ParticipationRequestService;
+import ru.practicum.service.ParticipationRequestService;
 
 import java.time.LocalDateTime;
 import java.util.List;

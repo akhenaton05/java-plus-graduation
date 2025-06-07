@@ -14,12 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.MainService;
+import ru.practicum.category_service.dto.CategoryDto;
+import ru.practicum.event_service.dto.*;
 import ru.practicum.user_service.config.StatsClientConfig;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.NewEventDto;
-import ru.practicum.events.dto.UpdateEventUserRequest;
-import ru.practicum.events.model.Location;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.user_service.dto.UserShortDto;
 import ru.practicum.users.service.PrivateUserEventService;
@@ -52,10 +49,10 @@ public class PrivateUserEventsControllerTest {
     private StatsClientConfig statsClientConfig;
 
     private final NewEventDto eventDto = new NewEventDto(1L, "annotationannotationannotation", 1L, "descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription",
-            "2025-12-31 15:10:05", new Location(), true, 10, false, "Title");
+            "2025-12-31 15:10:05", new LocationDto(), true, 10, false, "Title");
     private final EventFullDto eventFullDto = EventFullDto.builder()
             .id(1L)
-            .location(new Location(1L, 33, 33))
+            .location(new LocationDto(1L, 33, 33))
             .eventDate("2024-12-31 15:10:05")
             .publishedOn("2024-12-31 15:10:05")
             .annotation("annotation2")
@@ -174,7 +171,7 @@ public class PrivateUserEventsControllerTest {
         when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
 
         UpdateEventUserRequest updateDto = new UpdateEventUserRequest(1L, "aninaninaninaninaninaninaninanin", 1, "descdescdescdescdescdescdescdescdescdescdescdescdescdescdescdescdescdescdescdescdescdesc",
-                "2026-03-11 15:10:00", new Location(1L, 33, 33), true,
+                "2026-03-11 15:10:00", new LocationDto(1L, 33, 33), true,
                 1, true, "S", "titile");
 
         when(privateUserEventService.updateUserEvent(any(), anyLong(), any())).thenReturn(eventFullDto);

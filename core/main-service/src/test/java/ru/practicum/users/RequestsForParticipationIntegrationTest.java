@@ -2,6 +2,8 @@ package ru.practicum.users;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,26 +13,21 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.MainService;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.service.CategoryService;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.NewEventDto;
-import ru.practicum.events.dto.UpdateEventAdminRequest;
+import ru.practicum.category_service.dto.CategoryDto;
+import ru.practicum.event_service.dto.EventFullDto;
+import ru.practicum.event_service.dto.LocationDto;
+import ru.practicum.event_service.dto.NewEventDto;
+import ru.practicum.event_service.dto.UpdateEventAdminRequest;
 import ru.practicum.event_service.entity.EventStateAction;
-import ru.practicum.events.model.Location;
 import ru.practicum.events.service.AdminEventService;
+import ru.practicum.request_service.dto.ParticipationRequestDto;
 import ru.practicum.user_service.dto.NewUserRequest;
 import ru.practicum.user_service.dto.UserDto;
 import ru.practicum.user_service.dto.UserShortDto;
 import ru.practicum.user_service.feign.UserClient;
-import ru.practicum.users.dto.ParticipationRequestDto;
-import ru.practicum.users.errors.EventOwnerParticipationException;
-import ru.practicum.users.errors.EventParticipationLimitException;
-import ru.practicum.users.errors.NotPublishedEventParticipationException;
-import ru.practicum.users.errors.RepeatParticipationRequestException;
 import ru.practicum.request_service.entity.ParticipationRequestStatus;
-import ru.practicum.users.service.ParticipationRequestService;
 import ru.practicum.users.service.PrivateUserEventService;
 
 import java.util.List;
@@ -41,7 +38,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = MainService.class, properties = "spring.profiles.active=test")
+@SpringBootTest(classes = RequestService.class, properties = "spring.profiles.active=test")
 @ExtendWith(SpringExtension.class)
 @Transactional(readOnly = true)
 @Slf4j
@@ -93,7 +90,7 @@ public class RequestsForParticipationIntegrationTest {
         CategoryDto category = categoryService.addCategory(newCategory);
 
         // Создание события
-        Location location = new Location();
+        LocationDto location = new LocationDto();
         location.setLat(0.12f);
         location.setLon(0.11f);
 
@@ -117,7 +114,7 @@ public class RequestsForParticipationIntegrationTest {
     @Test
     void getUserRequests_ShouldReturnEmptyListInitially() {
         List<ParticipationRequestDto> requests = participationRequestService.getUserRequests(eventOwner.getId());
-        assertThat(requests).isEmpty();
+        AssertionsForInterfaceTypes.assertThat(requests).isEmpty();
     }
 
     @Test
@@ -130,10 +127,10 @@ public class RequestsForParticipationIntegrationTest {
         ParticipationRequestDto requestDto = participationRequestService
                 .addParticipationRequest(eventParticipant.getId(), eventFullDto.getId());
 
-        assertThat(requestDto).isNotNull();
-        assertThat(requestDto.getRequester()).isEqualTo(eventParticipant.getId());
-        assertThat(requestDto.getEvent()).isEqualTo(pendingEvent.getId());
-        assertThat(requestDto.getStatus()).isEqualTo(ParticipationRequestStatus.CONFIRMED);
+        AssertionsForClassTypes.assertThat(requestDto).isNotNull();
+        AssertionsForClassTypes.assertThat(requestDto.getRequester()).isEqualTo(eventParticipant.getId());
+        AssertionsForClassTypes.assertThat(requestDto.getEvent()).isEqualTo(pendingEvent.getId());
+        AssertionsForInterfaceTypes.assertThat(requestDto.getStatus()).isEqualTo(ParticipationRequestStatus.CONFIRMED);
     }
 
     @Test
@@ -177,6 +174,6 @@ public class RequestsForParticipationIntegrationTest {
         ParticipationRequestDto canceledRequest = participationRequestService
                 .cancelRequest(eventParticipant.getId(), requestDto.getId());
 
-        assertThat(canceledRequest.getStatus()).isEqualTo(ParticipationRequestStatus.CANCELED);
+        AssertionsForInterfaceTypes.assertThat(canceledRequest.getStatus()).isEqualTo(ParticipationRequestStatus.CANCELED);
     }
 }

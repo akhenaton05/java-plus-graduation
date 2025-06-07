@@ -19,11 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.MainService;
+import ru.practicum.category_service.dto.CategoryDto;
+import ru.practicum.event_service.dto.*;
 import ru.practicum.user_service.config.StatsClientConfig;
-import ru.practicum.events.dto.EventFullDto;
-import ru.practicum.events.dto.EventShortDto;
-import ru.practicum.events.dto.LookEventDto;
-import ru.practicum.events.dto.SearchEventsParams;
 import ru.practicum.events.model.Location;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.repository.EventRepository;
@@ -84,7 +82,7 @@ public class PublicEventControllerTest {
             .createdOn(secondDate)
             .description("12345".repeat(6))
             .publishedOn(thirdDate)
-            .location(new Location())
+            .location(new LocationDto())
             .participantLimit(0)
             .requestModeration(true)
             .state(StateEvent.PUBLISHED)

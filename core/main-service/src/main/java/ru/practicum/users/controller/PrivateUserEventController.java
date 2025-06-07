@@ -11,10 +11,10 @@ import ru.practicum.event_service.dto.EventFullDto;
 import ru.practicum.event_service.dto.EventShortDto;
 import ru.practicum.event_service.dto.NewEventDto;
 import ru.practicum.event_service.dto.UpdateEventUserRequest;
+import ru.practicum.request_service.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.request_service.dto.EventRequestStatusUpdateResult;
+import ru.practicum.request_service.dto.ParticipationRequestDto;
 import ru.practicum.user_service.dto.GetUserEventsDto;
-import ru.practicum.users.dto.EventRequestStatusUpdateRequest;
-import ru.practicum.users.dto.EventRequestStatusUpdateResult;
-import ru.practicum.users.dto.ParticipationRequestDto;
 import ru.practicum.users.service.PrivateUserEventService;
 
 import java.util.List;

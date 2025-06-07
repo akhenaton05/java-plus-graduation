@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.MainService;
 import ru.practicum.category.dto.GetCategoriesParams;
 import ru.practicum.category.service.CategoryService;
+import ru.practicum.category_service.dto.CategoryDto;
 import ru.practicum.user_service.config.StatsClientConfig;
 
 import java.util.List;

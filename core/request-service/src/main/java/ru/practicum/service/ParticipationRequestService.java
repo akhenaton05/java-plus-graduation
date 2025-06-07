@@ -4,8 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.event_service.dto.EventFullDto;
 import ru.practicum.model.ParticipationRequest;
+import ru.practicum.request_service.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.request_service.dto.ParticipationRequestDto;
 import ru.practicum.event_service.feign.EventClient;
 import ru.practicum.mapper.ParticipationRequestMapper;
@@ -85,5 +87,30 @@ public class ParticipationRequestService {
 
     private EventFullDto getEvent(Long eventId) {
         return eventClient.getEventById(eventId).getBody();
+    }
+
+    public List<ParticipationRequestDto> findRequestsByEventId(Long eventId) {
+         return requestRepository.findByEventId(eventId).stream()
+                 .map(participationRequestMapper::mapToDto)
+                 .toList();
+    }
+
+    public List<ParticipationRequestDto> findByRequestIds(List<Long> requestIds) {
+        return requestRepository.findByIds(requestIds).stream()
+                .map(participationRequestMapper::mapToDto)
+                .toList();
+    }
+
+    @Transactional
+    public void updateStatusByIds(EventRequestStatusUpdateRequest request) {
+        requestRepository.updateStatusByIds(ParticipationRequestStatus.valueOf(request.getStatus()), request.getRequestIds());
+    }
+
+    public boolean existsByUserIdAndEventId(Long userId, Long eventId) {
+        return requestRepository.existsByUserIdAndEventId(userId, eventId);
+    }
+
+    public Integer getConfirmedRequestsCount(Long eventId) {
+        return requestRepository.countConfirmedRequestsByStatusAndEventId(ParticipationRequestStatus.CONFIRMED, eventId);
     }
 }
