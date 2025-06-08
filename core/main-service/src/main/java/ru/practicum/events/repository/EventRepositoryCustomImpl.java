@@ -84,10 +84,8 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
     @Override
     public List<Event> searchEvents(BooleanBuilder eventCondition, ParticipationRequestStatus status,
                                     boolean onlyAvailable, int from, int size) {
-        log.info("1");
         QEvent event = QEvent.event;
 
-        log.info("2");
         // Получаем события
         List<Event> events = new JPAQuery<>(em)
                 .select(event)
@@ -95,14 +93,12 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                 .where(eventCondition)
                 .fetch();
 
-        log.info("3");
         // Получаем количество подтверждённых заявок
         List<Long> eventIds = events.stream().map(Event::getId).toList();
         Map<Long, Integer> confirmedCounts = eventIds.isEmpty() ? new HashMap<>()
                 : requestClient.getConfirmedRequestsCounts(eventIds).getBody();
         events.forEach(e -> e.setConfirmedRequests(confirmedCounts.getOrDefault(e.getId(), 0)));
 
-        log.info("4");
         // Фильтруем по onlyAvailable
         if (onlyAvailable) {
             events = events.stream()
@@ -111,7 +107,6 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                     .toList();
         }
 
-        log.info("5");
         // Применяем пагинацию
         int toIndex = Math.min(from + size, events.size());
         if (from >= events.size()) {

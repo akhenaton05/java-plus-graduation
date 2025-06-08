@@ -13,7 +13,6 @@ import ru.practicum.user_service.feign.UserClient;
 @Component
 @RequiredArgsConstructor
 public class CommentMapper {
-//    private final EventMapper eventMapper;
     private final UserClient userClient;
     private final EventClient eventClient;
 

@@ -1,4 +1,4 @@
-package ru.practicum.users.service;
+package ru.practicum.events.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;

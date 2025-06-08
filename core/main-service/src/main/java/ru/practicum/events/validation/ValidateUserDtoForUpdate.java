@@ -1,4 +1,4 @@
-package ru.practicum.users.validation;
+package ru.practicum.events.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

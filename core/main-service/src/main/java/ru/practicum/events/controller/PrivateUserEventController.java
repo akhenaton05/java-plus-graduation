@@ -1,4 +1,4 @@
-package ru.practicum.users.controller;
+package ru.practicum.events.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import ru.practicum.request_service.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.request_service.dto.EventRequestStatusUpdateResult;
 import ru.practicum.request_service.dto.ParticipationRequestDto;
 import ru.practicum.user_service.dto.GetUserEventsDto;
-import ru.practicum.users.service.PrivateUserEventService;
+import ru.practicum.events.service.PrivateUserEventService;
 
 import java.util.List;
 

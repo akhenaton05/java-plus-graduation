@@ -1,20 +1,18 @@
-package ru.practicum.users.validation;
+package ru.practicum.events.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.events.model.Event;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.request_service.feign.RequestClient;
-import ru.practicum.users.errors.EventOwnerParticipationException;
-import ru.practicum.users.errors.EventParticipationLimitException;
-import ru.practicum.users.errors.NotPublishedEventParticipationException;
-import ru.practicum.users.errors.RepeatParticipationRequestException;
+import ru.practicum.events.errors.EventOwnerParticipationException;
+import ru.practicum.events.errors.EventParticipationLimitException;
+import ru.practicum.events.errors.NotPublishedEventParticipationException;
+import ru.practicum.events.errors.RepeatParticipationRequestException;
 
 @Component
 @RequiredArgsConstructor
 public class ParticipationRequestValidator {
-
-//    private final ParticipationRequestRepository requestRepository;
     private final RequestClient requestService;
 
     public RuntimeException checkRequest(Long userId, Event event, long confirmedRequestsCount) {

@@ -1,4 +1,4 @@
-package ru.practicum.users.errors;
+package ru.practicum.events.errors;
 
 import org.springframework.dao.DataIntegrityViolationException;
 

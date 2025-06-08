@@ -1,7 +1,6 @@
 package ru.practicum.event_service.validation;
 
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.practicum.event_service.dto.SearchEventsParams;
 import ru.practicum.user_service.config.DateConfig;

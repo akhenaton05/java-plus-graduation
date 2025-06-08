@@ -1,42 +1,8 @@
 package ru.practicum.users;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.AssertionsForClassTypes;
-import org.assertj.core.api.AssertionsForInterfaceTypes;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.category.dto.NewCategoryDto;
-import ru.practicum.category.service.CategoryService;
-import ru.practicum.category_service.dto.CategoryDto;
-import ru.practicum.event_service.dto.EventFullDto;
-import ru.practicum.event_service.dto.LocationDto;
-import ru.practicum.event_service.dto.NewEventDto;
-import ru.practicum.event_service.dto.UpdateEventAdminRequest;
-import ru.practicum.event_service.entity.EventStateAction;
-import ru.practicum.events.service.AdminEventService;
-import ru.practicum.request_service.dto.ParticipationRequestDto;
-import ru.practicum.user_service.dto.NewUserRequest;
-import ru.practicum.user_service.dto.UserDto;
-import ru.practicum.user_service.dto.UserShortDto;
-import ru.practicum.user_service.feign.UserClient;
-import ru.practicum.request_service.entity.ParticipationRequestStatus;
-import ru.practicum.users.service.PrivateUserEventService;
-
-import java.util.List;
-
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
 
 //@SpringBootTest(classes = RequestService.class, properties = "spring.profiles.active=test")
 //@ExtendWith(SpringExtension.class)

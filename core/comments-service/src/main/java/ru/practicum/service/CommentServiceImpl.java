@@ -34,9 +34,6 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
-
-//    private final PublicEventsService publicEventsService;
-//    private final EventRepository eventRepository;
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
     private final EventClient eventClient;
@@ -55,9 +52,6 @@ public class CommentServiceImpl implements CommentService {
         if (Objects.isNull(eventClient.getEventById(eventId).getBody())) {
             throw new EntityNotFoundException("Event with " + id + " not found");
         }
-
-//        eventRepository.findById(eventId)
-//                .orElseThrow(() -> new EntityNotFoundException("Event with " + id + " not found"));
 
         Sort sortType = sort == CommentsOrder.NEWEST ?
                 Sort.by("id").descending() : Sort.by("id").ascending();

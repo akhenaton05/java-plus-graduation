@@ -14,13 +14,12 @@ import ru.practicum.MainService;
 import ru.practicum.category.service.CategoryServiceImpl;
 import ru.practicum.event_service.dto.*;
 import ru.practicum.events.model.Event;
-import ru.practicum.events.model.Location;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.user_service.dto.GetUserEventsDto;
 import ru.practicum.user_service.dto.UserShortDto;
 import ru.practicum.user_service.feign.UserClient;
-import ru.practicum.users.service.PrivateUserEventService;
+import ru.practicum.events.service.PrivateUserEventService;
 
 import java.time.LocalDateTime;
 import java.util.List;

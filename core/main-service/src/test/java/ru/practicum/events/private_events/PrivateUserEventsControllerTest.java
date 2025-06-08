@@ -19,7 +19,7 @@ import ru.practicum.event_service.dto.*;
 import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.user_service.dto.UserShortDto;
-import ru.practicum.users.service.PrivateUserEventService;
+import ru.practicum.events.service.PrivateUserEventService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
