@@ -23,7 +23,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ParticipationRequestServiceImpl {
+public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
     private final ParticipationRequestRepository requestRepository;
     private final UserClient userClient;
@@ -83,7 +83,7 @@ public class ParticipationRequestServiceImpl {
         return participationRequestMapper.mapToDto(request);
     }
 
-    private EventFullDto getEvent(Long eventId) {
+    public EventFullDto getEvent(Long eventId) {
         return eventClient.getEventById(eventId).getBody();
     }
 
