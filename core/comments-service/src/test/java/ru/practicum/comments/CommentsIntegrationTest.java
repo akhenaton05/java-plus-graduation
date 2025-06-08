@@ -10,8 +10,8 @@ import ru.practicum.comment_service.entity.CommentsStatus;
 import ru.practicum.model.Comment;
 import ru.practicum.repository.CommentRepository;
 import ru.practicum.service.CommentService;
-import ru.practicum.user_service.errors.AccessDeniedException;
-import ru.practicum.user_service.errors.ForbiddenActionException;
+import ru.practicum.errors.AccessDeniedException;
+import ru.practicum.errors.ForbiddenActionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 

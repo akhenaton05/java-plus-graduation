@@ -17,7 +17,7 @@ import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.controller.ClientController;
 import ru.practicum.dto.ReadEndpointHitDto;
-import ru.practicum.user_service.errors.EventNotPublishedException;
+import ru.practicum.errors.EventNotPublishedException;
 import ru.practicum.events.mapper.EventMapper;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.QEvent;

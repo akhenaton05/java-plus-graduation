@@ -5,13 +5,14 @@ import jakarta.validation.constraints.Min;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.request_service.feign.RequestClientFallback;
 import ru.practicum.user_service.dto.NewUserRequest;
 import ru.practicum.user_service.dto.UserDto;
 import ru.practicum.user_service.dto.UserShortDto;
 
 import java.util.List;
 
-@FeignClient(name = "user-service", path = "/admin/users")
+@FeignClient(name = "user-service", path = "/admin/users", fallbackFactory = UserClientFallback.class)
 public interface UserClient {
 
     @PostMapping

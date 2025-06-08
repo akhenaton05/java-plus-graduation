@@ -3,13 +3,14 @@ package ru.practicum.request_service.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.event_service.feign.EventServiceFallback;
 import ru.practicum.request_service.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.request_service.dto.ParticipationRequestDto;
 
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "request-service")
+@FeignClient(name = "request-service", fallbackFactory = RequestClientFallback.class)
 public interface RequestClient {
 
     @GetMapping("/users/{userId}/requests")

@@ -1,4 +1,4 @@
-package ru.practicum.user_service.errors;
+package ru.practicum.errors;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ru.practicum.user_service.exceptions.ServiceUnavailableException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -83,6 +84,11 @@ public class ErrorHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleIllegalArgumentException(IllegalArgumentException ex) {
         return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, "Incorrect arguments.");
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<ApiError> ServiceUnavailableException(ServiceUnavailableException ex) {
+        return buildErrorResponse(ex, HttpStatus.BAD_REQUEST, "Service unavailable");
     }
 
     @ExceptionHandler

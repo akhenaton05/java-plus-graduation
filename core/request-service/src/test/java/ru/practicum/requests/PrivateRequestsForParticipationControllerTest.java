@@ -40,7 +40,7 @@ public class PrivateRequestsForParticipationControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ParticipationRequestService participationRequestService;
+    private ParticipationRequestService participationRequestServiceImpl;
 
     private final Long userId = 1L;
     private final Long eventId = 2L;
@@ -58,7 +58,7 @@ public class PrivateRequestsForParticipationControllerTest {
         List<ParticipationRequestDto> requests = List.of(
                 new ParticipationRequestDto(requestId, userId, eventId, ParticipationRequestStatus.PENDING, LocalDateTime.now()));
 
-        when(participationRequestService.getUserRequests(anyLong())).thenReturn(requests);
+        when(participationRequestServiceImpl.getUserRequests(anyLong())).thenReturn(requests);
 
         var result = mockMvc.perform(get("/users/{userId}/requests", userId))
                 .andExpect(status().isOk())
@@ -77,7 +77,7 @@ public class PrivateRequestsForParticipationControllerTest {
         ParticipationRequestDto requestDto =
                 new ParticipationRequestDto(requestId, userId, eventId, ParticipationRequestStatus.CONFIRMED, LocalDateTime.now());
 
-        when(participationRequestService.addParticipationRequest(anyLong(), anyLong())).thenReturn(requestDto);
+        when(participationRequestServiceImpl.addParticipationRequest(anyLong(), anyLong())).thenReturn(requestDto);
 
         var result = mockMvc.perform(post("/users/{userId}/requests", userId)
                         .param("eventId", eventId.toString()))
@@ -96,7 +96,7 @@ public class PrivateRequestsForParticipationControllerTest {
         ParticipationRequestDto canceledRequest =
                 new ParticipationRequestDto(requestId, userId, eventId, ParticipationRequestStatus.CANCELED, LocalDateTime.now());
 
-        when(participationRequestService.cancelRequest(anyLong(), anyLong())).thenReturn(canceledRequest);
+        when(participationRequestServiceImpl.cancelRequest(anyLong(), anyLong())).thenReturn(canceledRequest);
 
         var result = mockMvc.perform(patch("/users/{userId}/requests/{requestId}/cancel", userId, requestId))
                 .andExpect(status().isOk())

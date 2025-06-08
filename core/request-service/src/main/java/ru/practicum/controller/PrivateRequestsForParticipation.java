@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PrivateRequestsForParticipation {
 
-    private final ParticipationRequestService participationRequestService;
+    private final ParticipationRequestService participationRequestServiceImpl;
 
     @GetMapping("/users/{userId}/requests")
     public ResponseEntity<List<ParticipationRequestDto>> getUserRequests(@PathVariable Long userId) {
         log.info("Request to get participation requests for user {}", userId);
-        List<ParticipationRequestDto> participationRequests = participationRequestService.getUserRequests(userId);
+        List<ParticipationRequestDto> participationRequests = participationRequestServiceImpl.getUserRequests(userId);
         return ResponseEntity.ok(participationRequests);
     }
 
@@ -32,7 +32,7 @@ public class PrivateRequestsForParticipation {
             @PathVariable Long userId,
             @RequestParam Long eventId) {
         log.info("Request to add participation request for user {} for event {}", userId, eventId);
-        ParticipationRequestDto participationRequest = participationRequestService.addParticipationRequest(userId, eventId);
+        ParticipationRequestDto participationRequest = participationRequestServiceImpl.addParticipationRequest(userId, eventId);
         return ResponseEntity.status(HttpStatus.CREATED).body(participationRequest);
     }
 
@@ -41,28 +41,28 @@ public class PrivateRequestsForParticipation {
             @PathVariable Long userId,
             @PathVariable Long requestId) {
         log.info("Request to cancel participation request for user {} and request {}", userId, requestId);
-        ParticipationRequestDto cancelledRequest = participationRequestService.cancelRequest(userId, requestId);
+        ParticipationRequestDto cancelledRequest = participationRequestServiceImpl.cancelRequest(userId, requestId);
         return ResponseEntity.ok(cancelledRequest);
     }
 
     @GetMapping("/requests/by-event")
     public ResponseEntity<List<ParticipationRequestDto>> findRequestsByEventId(@RequestParam Long eventId) {
         log.info("Request to get participation requests for event {}", eventId);
-        List<ParticipationRequestDto> participationRequests = participationRequestService.findRequestsByEventId(eventId);
+        List<ParticipationRequestDto> participationRequests = participationRequestServiceImpl.findRequestsByEventId(eventId);
         return ResponseEntity.ok(participationRequests);
     }
 
     @GetMapping("/requests/by-request-ids")
     public ResponseEntity<List<ParticipationRequestDto>> findByRequestIds(@RequestParam List<Long> requestIds) {
         log.info("Request to get participation requests for requestIds {}", requestIds);
-        List<ParticipationRequestDto> participationRequests = participationRequestService.findByRequestIds(requestIds);
+        List<ParticipationRequestDto> participationRequests = participationRequestServiceImpl.findByRequestIds(requestIds);
         return ResponseEntity.ok(participationRequests);
     }
 
     @PostMapping("/requests/update-request-ids")
     public void updateStatusByIds(@RequestBody EventRequestStatusUpdateRequest request) {
         log.info("Request to update participation requests for requestIds {}", request);
-        participationRequestService.updateStatusByIds(request);
+        participationRequestServiceImpl.updateStatusByIds(request);
     }
 
     @GetMapping("/requests/exists")
@@ -70,13 +70,13 @@ public class PrivateRequestsForParticipation {
             @RequestParam("checkUserId") Long checkUserId,
             @RequestParam Long eventId) {
         log.info("Exists check for userId {}, eventId {}", checkUserId, eventId);
-        return participationRequestService.existsByUserIdAndEventId(checkUserId, eventId);
+        return participationRequestServiceImpl.existsByUserIdAndEventId(checkUserId, eventId);
     }
 
     @GetMapping("/requests/confirmed-count")
     public ResponseEntity<Integer> getConfirmedRequestsCount(@RequestParam Long eventId) {
         log.info("Request for getting confirmed requests count for event {}", eventId);
-        return ResponseEntity.ok(participationRequestService.getConfirmedRequestsCount(eventId));
+        return ResponseEntity.ok(participationRequestServiceImpl.getConfirmedRequestsCount(eventId));
     }
 
     @GetMapping("/requests/confirmed-counts")
@@ -85,7 +85,7 @@ public class PrivateRequestsForParticipation {
         Map<Long, Integer> counts = eventIds.stream()
                 .collect(Collectors.toMap(
                         eventId -> eventId,
-                        participationRequestService::getConfirmedRequests
+                        participationRequestServiceImpl::getConfirmedRequests
                 ));
         return ResponseEntity.ok(counts);
     }

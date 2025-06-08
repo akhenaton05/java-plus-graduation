@@ -1,4 +1,4 @@
-package ru.practicum.user_service.errors;
+package ru.practicum.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

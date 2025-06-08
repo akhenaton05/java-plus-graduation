@@ -19,8 +19,8 @@ import ru.practicum.model.Comment;
 import ru.practicum.comment_service.entity.CommentsOrder;
 import ru.practicum.comment_service.entity.CommentsStatus;
 import ru.practicum.repository.CommentRepository;
-import ru.practicum.user_service.errors.AccessDeniedException;
-import ru.practicum.user_service.errors.ForbiddenActionException;
+import ru.practicum.errors.AccessDeniedException;
+import ru.practicum.errors.ForbiddenActionException;
 
 import java.time.LocalDateTime;
 import java.util.List;

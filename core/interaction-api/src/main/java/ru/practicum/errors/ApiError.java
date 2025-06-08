@@ -1,4 +1,4 @@
-package ru.practicum.user_service.errors;
+package ru.practicum.errors;
 
 import lombok.Data;
 import ru.practicum.config.DateConfig;

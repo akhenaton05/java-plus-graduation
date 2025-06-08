@@ -17,7 +17,7 @@ import ru.practicum.request_service.dto.EventRequestStatusUpdateResult;
 import ru.practicum.request_service.dto.ParticipationRequestDto;
 import ru.practicum.request_service.feign.RequestClient;
 import ru.practicum.user_service.config.DateConfig;
-import ru.practicum.user_service.errors.ForbiddenActionException;
+import ru.practicum.errors.ForbiddenActionException;
 import ru.practicum.events.mapper.EventMapper;
 import ru.practicum.events.model.Event;
 import ru.practicum.event_service.entity.StateEvent;
