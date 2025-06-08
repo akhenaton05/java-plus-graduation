@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: main-service
+    name: event-service
   jpa:
     hibernate:
       ddl-auto: none
