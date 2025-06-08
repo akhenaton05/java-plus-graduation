@@ -12,8 +12,8 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.MainService;
-import ru.practicum.comments.service.CommentService;
+import ru.practicum.CommentsService;
+import ru.practicum.service.CommentService;
 import ru.practicum.user_service.config.StatsClientConfig;
 
 import static org.mockito.Mockito.mock;
@@ -22,9 +22,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = MainService.class)
+@SpringBootTest(classes = CommentsService.class)
 @AutoConfigureMockMvc
-public class AdminCommentsControllerTest {
+public class UserCommentControllerTest {
+
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -38,7 +39,7 @@ public class AdminCommentsControllerTest {
 
     @Test
     @SneakyThrows
-    public void deleteByIdTest() {
+    public void softDeleteTest() {
         // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
@@ -46,7 +47,7 @@ public class AdminCommentsControllerTest {
         when(mockInstance.getPort()).thenReturn(9090);
         when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
 
-        mockMvc.perform(delete("/admin/comments/" + 1L))
+        mockMvc.perform(delete("/users/" + 2L + "/comments/" + 1L))
                 .andExpect(status().isNoContent());
     }
 }

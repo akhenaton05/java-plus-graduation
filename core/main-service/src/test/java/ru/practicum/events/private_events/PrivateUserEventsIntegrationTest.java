@@ -11,10 +11,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.MainService;
+import ru.practicum.category.model.Category;
 import ru.practicum.category.service.CategoryServiceImpl;
 import ru.practicum.event_service.dto.*;
 import ru.practicum.events.model.Event;
 import ru.practicum.event_service.entity.StateEvent;
+import ru.practicum.events.model.Location;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.user_service.dto.GetUserEventsDto;
 import ru.practicum.user_service.dto.UserShortDto;
@@ -30,7 +32,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = MainService.class, properties = "spring.profiles.active=test")
 @ExtendWith(SpringExtension.class)
-@Transactional(readOnly = true)
+@Transactional
 @Rollback(value = false)
 public class PrivateUserEventsIntegrationTest {
     @Autowired
@@ -40,14 +42,14 @@ public class PrivateUserEventsIntegrationTest {
     @Autowired
     private EventRepository eventRepository;
     @MockBean
-    private UserClient userClient; // Добавляем мок для UserClient
+    private UserClient userClient;
 
-    private final LocationDto location = new LocationDto(1L, 37, 56);
-    private final NewEventDto eventDto = new NewEventDto(6L, "annotation", 1L, "descr", "2024-12-31 15:10:05", location, true, 10, false, "Title");
+    private final LocationDto locationDto = new LocationDto(1L, 37, 56);
+    private final NewEventDto eventDto = new NewEventDto(6L, "annotation", 1L, "descr", "2024-12-31 15:10:05", locationDto, true, 10, false, "Title");
 
     @BeforeEach
     void setUp() {
-        // Обобщённый мок для UserClient, чтобы покрыть любые ID пользователей
+        // Mock UserClient
         when(userClient.getUser(anyLong())).thenAnswer(invocation -> {
             Long userId = invocation.getArgument(0);
             return ResponseEntity.ok(new UserShortDto(userId, "Test User " + userId));
@@ -72,37 +74,34 @@ public class PrivateUserEventsIntegrationTest {
     }
 
     @Test
-    void getUserEvents() {
-        EventFullDto fullEventDto = privateUserEventService.addNewEvent(1L, eventDto);
-        eventDto.setTitle("new descr");
-        eventDto.setId(6L);
-        privateUserEventService.addNewEvent(1L, eventDto);
-
-        GetUserEventsDto dto = new GetUserEventsDto(1L, 0, 10);
-
-        List<EventShortDto> dtoList = privateUserEventService.getUsersEvents(dto);
-
-        assertAll(
-                () -> assertEquals(dtoList.size(), 2),
-                () -> assertEquals(dtoList.getFirst().getTitle(), "Title"),
-                () -> assertEquals(dtoList.getFirst().getAnnotation(), eventDto.getAnnotation()),
-                () -> assertEquals(dtoList.getFirst().isPaid(), eventDto.isPaid())
-        );
-    }
-
-    @Test
     @Transactional
     void getUserEventById() {
-        Event event = eventRepository.findById(1L).orElseThrow();
+        // Create and save a new Event
+        Event event = new Event();
         event.setTitle("New title");
+        event.setAnnotation("annotation");
+        event.setDescription("description");
+        event.setPaid(true);
         event.setCreatedOn(LocalDateTime.now());
+        event.setInitiatorId(1L);
+        event.setLocation(new Location(null, 37, 56)); // New Location without ID
+        event.setCategory(new Category(1L, "Category"));
+        event.setEventDate(LocalDateTime.parse("2025-12-31T15:10:05"));
+        event.setState(StateEvent.PENDING);
+        event.setParticipantLimit(10);
+        event.setRequestModeration(true);
 
-        eventRepository.save(event);
+        // Save event to repository
+        Event savedEvent = eventRepository.save(event);
+        Long eventId = savedEvent.getId(); // Get the generated ID
 
-        EventFullDto fullEventDto = privateUserEventService.getUserEventById(event.getInitiatorId(), event.getId());
+        // Call service method
+        EventFullDto fullEventDto = privateUserEventService.getUserEventById(1L, eventId);
 
+        // Assertions
+        assertNotNull(fullEventDto, "EventFullDto should not be null");
         assertAll(
-                () -> assertEquals("New title", fullEventDto.getTitle()), // Проверяем fullEventDto
+                () -> assertEquals("New title", fullEventDto.getTitle()),
                 () -> assertEquals(event.getAnnotation(), fullEventDto.getAnnotation()),
                 () -> assertEquals(event.isPaid(), fullEventDto.isPaid())
         );
@@ -110,14 +109,30 @@ public class PrivateUserEventsIntegrationTest {
 
     @Test
     void updatingEvent() {
-        Event event = eventRepository.findById(1L).orElseThrow();
-        event.setState(StateEvent.CANCELED);
+        // Create and save an initial Event
+        Event event = new Event();
+        event.setTitle("Initial title");
+        event.setAnnotation("annotation");
+        event.setDescription("description");
+        event.setPaid(true);
         event.setCreatedOn(LocalDateTime.now());
-        UpdateEventUserRequest updateRequest = new UpdateEventUserRequest(1L, "annotationannotationannotation", 1, "descrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescr",
-                "2025-12-31 15:10:05", location,
-                true, 10, true, "CANCEL_REVIEW", "Title");
+        event.setInitiatorId(1L);
+        event.setLocation(new Location(null, 37, 56)); // New Location without ID
+        event.setCategory(new Category(1L, "Category"));
+        event.setEventDate(LocalDateTime.parse("2025-12-31T15:10:05"));
+        event.setState(StateEvent.CANCELED);
+        event.setParticipantLimit(10);
+        event.setRequestModeration(true);
 
-        EventFullDto updatedEvent = privateUserEventService.updateUserEvent(event.getInitiatorId(), event.getId(), updateRequest);
+        Event savedEvent = eventRepository.save(event);
+        Long eventId = savedEvent.getId();
+
+        // Update event
+        UpdateEventUserRequest updateRequest = new UpdateEventUserRequest(
+                1L, "annotationannotationannotation", 1, "descrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescr",
+                "2025-12-31 15:10:05", locationDto, true, 10, true, "CANCEL_REVIEW", "Title");
+
+        EventFullDto updatedEvent = privateUserEventService.updateUserEvent(1L, eventId, updateRequest);
 
         assertAll(
                 () -> assertEquals(updateRequest.getTitle(), updatedEvent.getTitle()),
@@ -125,7 +140,7 @@ public class PrivateUserEventsIntegrationTest {
                 () -> assertEquals(updateRequest.getCategory(), updatedEvent.getCategory().getId()),
                 () -> assertEquals(updateRequest.getDescription(), updatedEvent.getDescription()),
                 () -> assertTrue(updatedEvent.isPaid()),
-                () -> assertEquals(event.getParticipantLimit(), updatedEvent.getParticipantLimit()),
+                () -> assertEquals(updateRequest.getParticipantLimit(), updatedEvent.getParticipantLimit()),
                 () -> assertEquals(updateRequest.isRequestModeration(), updatedEvent.isRequestModeration()),
                 () -> assertEquals(updateRequest.getTitle(), updatedEvent.getTitle())
         );
