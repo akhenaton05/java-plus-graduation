@@ -1,4 +1,4 @@
-package ru.practicum.comments.controller;
+package ru.practicum.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.comments.dto.CommentDto;
-import ru.practicum.comments.dto.CommentEconomDto;
-import ru.practicum.comments.service.CommentService;
+import ru.practicum.comment_service.dto.CommentDto;
+import ru.practicum.comment_service.dto.CommentEconomDto;
+import ru.practicum.service.CommentService;
 
 @RestController
 @RequestMapping("/users/{userId}/comments")

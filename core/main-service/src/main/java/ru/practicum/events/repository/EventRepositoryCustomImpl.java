@@ -81,42 +81,6 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
         return foundEvent;
     }
 
-//    @Override
-//    public List<Event> searchEvents(BooleanBuilder eventCondition, ParticipationRequestStatus status,
-//                                    boolean onlyAvailable, int from, int size) {
-//        QEvent event = QEvent.event;
-//        QParticipationRequest participation = QParticipationRequest.participationRequest;
-//
-//        // Строим запрос
-//        JPAQuery<Tuple> query = new JPAQuery<>(em)
-//                .select(event, participation.count())
-//                .from(event)
-//                .leftJoin(participation).on(participation.eventId.eq(event.id)
-//                        .and(participation.status.eq(status)))
-//                .where(eventCondition)
-//                .groupBy(event.id);
-//
-//        // Выполняем запрос
-//        List<Tuple> results = query.fetch();
-//
-//        // обработка результата
-//        List<Event> events = new ArrayList<>();
-//        if (onlyAvailable) {
-//            events = tuplesToEvents(event, results).stream()
-//                    .filter(ev -> ev.getParticipantLimit() == 0 ||
-//                            ev.getParticipantLimit() > ev.getConfirmedRequests())
-//                    .toList();
-//        } else {
-//            events = tuplesToEvents(event, results);
-//        }
-//
-//        int toIndex = Math.min(from + size, events.size());
-//        if (from >= events.size()) {
-//            return List.of();
-//        }
-//        return events.subList(from, toIndex);
-//    }
-
     @Override
     public List<Event> searchEvents(BooleanBuilder eventCondition, ParticipationRequestStatus status,
                                     boolean onlyAvailable, int from, int size) {
@@ -156,24 +120,6 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
         return events.subList(from, toIndex);
     }
 
-//    @Override
-//    public List<Event> findEventsWithConfirmedCount(List<Long> eventIds) {
-//        QEvent event = QEvent.event;
-//        QParticipationRequest participation = QParticipationRequest.participationRequest;
-//
-//        JPAQuery<Tuple> query = new JPAQuery<>(em)
-//                .select(event, participation.count())
-//                .from(event)
-//                .leftJoin(participation)
-//                .on(participation.eventId.eq(event.id)
-//                        .and(participation.status.eq(ParticipationRequestStatus.CONFIRMED)))
-//                .where(event.id.in(eventIds))
-//                .groupBy(event.id);
-//
-//        List<Tuple> currentList = query.fetch();
-//        return tuplesToEvents(event, currentList);
-//    }
-
     @Override
     public List<Event> findEventsWithConfirmedCount(List<Long> eventIds) {
         QEvent event = QEvent.event;
@@ -194,35 +140,6 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
 
         return events;
     }
-
-//    @Override
-//    public Event getSingleEvent(Long id) {
-//        QEvent event = QEvent.event;
-//        QParticipationRequest participation = QParticipationRequest.participationRequest;
-//
-//        Tuple result = new JPAQuery<>(em)
-//                .select(event, participation.id.count().coalesce(0L)) // Берем event и количество подтвержденных заявок
-//                .from(event)
-//                .leftJoin(participation).on(event.id.eq(participation.eventId)
-//                        .and(participation.status.eq(ParticipationRequestStatus.CONFIRMED)))
-//                .where(event.id.eq(id))
-//                .groupBy(event.id)
-//                .fetchOne();
-//
-//        if (Objects.isNull(result) || Objects.isNull(result.get(event))) {
-//            return null;
-//        }
-//
-//        Event eventResult = result.get(event);
-//        if (Objects.isNull(eventResult)) {
-//            return null;
-//        }
-//        Integer confirmedRequestsCount = result.get(participation.id.count().coalesce(0L).intValue());
-//
-//        eventResult.setConfirmedRequests((Objects.isNull(confirmedRequestsCount)) ? 0 : confirmedRequestsCount);
-//
-//        return eventResult;
-//    }
 
     @Override
     public Event getSingleEvent(Long id) {
@@ -253,7 +170,7 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                 Integer confirmedCount = Optional.ofNullable(tuple.get(1, Long.class))
                         .map(Long::intValue)
                         .orElse(0);  // Извлекаем количество участников
-                e.setConfirmedRequests(confirmedCount);  // пишем в транзиентное поле
+                e.setConfirmedRequests(confirmedCount);
                 events.add(e);
             }
         }

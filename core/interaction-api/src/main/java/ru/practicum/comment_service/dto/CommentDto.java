@@ -1,11 +1,11 @@
-package ru.practicum.comments.dto;
+package ru.practicum.comment_service.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.comments.model.CommentsStatus;
+import ru.practicum.comment_service.entity.CommentsStatus;
 
 import java.time.LocalDateTime;
 

@@ -1,10 +1,12 @@
-package ru.practicum.comments.dto;
+package ru.practicum.comment_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.comments.model.CommentsStatus;
+import ru.practicum.comment_service.entity.CommentsStatus;
+import ru.practicum.event_service.dto.EventShortDto;
+import ru.practicum.user_service.dto.UserShortDto;
 
 import java.time.LocalDateTime;
 
@@ -12,13 +14,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommentEconomDto {
+public class CommentOutputDto {
 
     private Long id;
 
-    private Long userId;
+    private UserShortDto user;
 
-    private Long eventId;
+    private EventShortDto event;
 
     private String text;
 

@@ -1,10 +1,10 @@
-package ru.practicum.comments.service;
+package ru.practicum.service;
 
-import ru.practicum.comments.dto.CommentDto;
-import ru.practicum.comments.dto.CommentEconomDto;
-import ru.practicum.comments.dto.CommentPagedDto;
-import ru.practicum.comments.model.Comment;
-import ru.practicum.comments.model.CommentsOrder;
+import ru.practicum.comment_service.dto.CommentDto;
+import ru.practicum.comment_service.dto.CommentEconomDto;
+import ru.practicum.comment_service.dto.CommentPagedDto;
+import ru.practicum.model.Comment;
+import ru.practicum.comment_service.entity.CommentsOrder;
 
 public interface CommentService {
 

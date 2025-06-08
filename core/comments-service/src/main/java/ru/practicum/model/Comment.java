@@ -1,11 +1,11 @@
-package ru.practicum.comments.model;
+package ru.practicum.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.events.model.Event;
+import ru.practicum.comment_service.entity.CommentsStatus;
 
 import java.time.LocalDateTime;
 
@@ -25,9 +25,8 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
-    private Event event;
+    private Long eventId;
 
     @Column(name = "text", nullable = false)
     private String text;

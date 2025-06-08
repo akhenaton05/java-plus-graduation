@@ -123,7 +123,6 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
     public EventRequestStatusUpdateResult updateUserEventRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
         UserShortDto user =  userClient.getUser(userId).getBody();
         Event event = getEventWithConfirmedRequests(eventId);
-        log.info("1");
         List<ParticipationRequestDto> participation = requestClient.findByRequestIds(request.getRequestIds()).getBody();
         for (ParticipationRequestDto req : participation) {
             if (!req.getStatus().equals(ParticipationRequestStatus.PENDING)) {
@@ -134,12 +133,9 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
         int partLimit = event.getParticipantLimit();
         int confPart = Objects.nonNull(event.getConfirmedRequests()) ? event.getConfirmedRequests() : 0;
         int diff = partLimit - confPart;
-        log.info("2");
+
         if (diff >= request.getRequestIds().size()) {
-            log.info("BEGORE");
             requestClient.updateStatusByIds(request);
-            log.info("AFTER");
-//            requestRepository.updateStatusByIds(ParticipationRequestStatus.valueOf(request.getStatus()), request.getRequestIds());
             if (RequestUpdateStatus.valueOf(request.getStatus()).equals(RequestUpdateStatus.CONFIRMED)) {
 
                 for (ParticipationRequestDto req : participation) {
@@ -171,9 +167,6 @@ public class PrivateUserEventServiceImpl implements PrivateUserEventService {
 
             requestClient.updateStatusByIds(new EventRequestStatusUpdateRequest(confirmed, ParticipationRequestStatus.CONFIRMED.toString()));
             requestClient.updateStatusByIds(new EventRequestStatusUpdateRequest(rejected, ParticipationRequestStatus.REJECTED.toString()));
-
-//            requestRepository.updateStatusByIds(ParticipationRequestStatus.CONFIRMED, confirmed);
-//            requestRepository.updateStatusByIds(ParticipationRequestStatus.REJECTED, rejected);
 
             EventRequestStatusUpdateResult res = new EventRequestStatusUpdateResult();
 

@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.practicum.event_service.dto.EventFullDto;
 import ru.practicum.model.ParticipationRequest;
 import ru.practicum.request_service.dto.EventRequestStatusUpdateRequest;
@@ -49,8 +48,7 @@ public class ParticipationRequestService {
     public ParticipationRequestDto addParticipationRequest(Long userId, Long eventId) {
         UserShortDto user = userClient.getUser(userId).getBody();
         EventFullDto event = getEvent(eventId);
-//        Event event = eventRepository.findById(eventId)
-//                .orElseThrow(() -> new EntityNotFoundException("Event with id=" + eventId + " was not found"));
+
         long confirmedRequestsCount = getConfirmedRequests(eventId);
 
         RuntimeException validationError =

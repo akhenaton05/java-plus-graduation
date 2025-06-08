@@ -79,4 +79,12 @@ public class PublicEventController {
         EventFullDto eventFullDto = publicEventsService.getEventById(id);
         return ResponseEntity.status(HttpStatus.OK).body(eventFullDto);
     }
+
+    @GetMapping("/get-event-status/{id}")
+    //Метод для Feign клиента, без регистрации просмотра пользователем
+    public ResponseEntity<EventFullDto> getEventAnyStatusWithViews(@PathVariable @Min(value = 1, message = "ID must be positive") Long id) {
+        log.info("\nPNew get event request for id {}", id);
+        EventFullDto eventFullDto = publicEventsService.getEventAnyStatusWithViews(id);
+        return ResponseEntity.status(HttpStatus.OK).body(eventFullDto);
+    }
 }

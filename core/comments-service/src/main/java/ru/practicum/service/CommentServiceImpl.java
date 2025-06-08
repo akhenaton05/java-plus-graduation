@@ -1,4 +1,4 @@
-package ru.practicum.comments.service;
+package ru.practicum.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -9,19 +9,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.comments.dto.CommentDto;
-import ru.practicum.comments.dto.CommentEconomDto;
-import ru.practicum.comments.dto.CommentOutputDto;
-import ru.practicum.comments.dto.CommentPagedDto;
-import ru.practicum.comments.mapper.CommentMapper;
-import ru.practicum.comments.model.Comment;
-import ru.practicum.comments.model.CommentsOrder;
-import ru.practicum.comments.model.CommentsStatus;
-import ru.practicum.comments.repository.CommentRepository;
+import ru.practicum.comment_service.dto.CommentDto;
+import ru.practicum.comment_service.dto.CommentEconomDto;
+import ru.practicum.comment_service.dto.CommentOutputDto;
+import ru.practicum.comment_service.dto.CommentPagedDto;
+import ru.practicum.event_service.feign.EventClient;
+import ru.practicum.mapper.CommentMapper;
+import ru.practicum.model.Comment;
+import ru.practicum.comment_service.entity.CommentsOrder;
+import ru.practicum.comment_service.entity.CommentsStatus;
+import ru.practicum.repository.CommentRepository;
 import ru.practicum.user_service.errors.AccessDeniedException;
 import ru.practicum.user_service.errors.ForbiddenActionException;
-import ru.practicum.events.repository.EventRepository;
-import ru.practicum.events.service.PublicEventsService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,10 +35,11 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 @Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
 
-    private final PublicEventsService publicEventsService;
-    private final EventRepository eventRepository;
+//    private final PublicEventsService publicEventsService;
+//    private final EventRepository eventRepository;
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
+    private final EventClient eventClient;
 
     @Override
     public CommentPagedDto getComments(Long eventId, int page, int size, CommentsOrder sort) {
@@ -52,8 +52,12 @@ public class CommentServiceImpl implements CommentService {
         if (Objects.isNull(sort))
             throw new IllegalArgumentException("Sort parameter cannot be null.");
 
-        eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Event with " + id + " not found"));
+        if (Objects.isNull(eventClient.getEventById(eventId).getBody())) {
+            throw new EntityNotFoundException("Event with " + id + " not found");
+        }
+
+//        eventRepository.findById(eventId)
+//                .orElseThrow(() -> new EntityNotFoundException("Event with " + id + " not found"));
 
         Sort sortType = sort == CommentsOrder.NEWEST ?
                 Sort.by("id").descending() : Sort.by("id").ascending();
@@ -79,7 +83,7 @@ public class CommentServiceImpl implements CommentService {
     public CommentEconomDto addComment(Long userId, CommentDto commentDto) {
         Comment comment = Comment.builder()
                 .userId(userId)
-                .event(publicEventsService.getEventAnyStatusWithViews(commentDto.getEventId()))
+                .eventId(commentDto.getEventId())
                 .text(commentDto.getText())
                 .created(LocalDateTime.now())
                 .status(CommentsStatus.PUBLISHED)
