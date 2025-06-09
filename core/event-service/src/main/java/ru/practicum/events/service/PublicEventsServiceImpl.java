@@ -144,7 +144,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
             builder.and(QEvent.event.category.id.in(searchEventsParams.getCategories()));
 
         // ... и еще по признаку платные/бесплатные
-        if (searchEventsParams.getPaid() != null)
+        if (Objects.nonNull(searchEventsParams.getPaid()))
             builder.and(QEvent.event.paid.eq(searchEventsParams.getPaid()));
 
         // Добавляем условие диапазона дат

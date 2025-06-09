@@ -22,7 +22,6 @@ import ru.practicum.MainService;
 import ru.practicum.category_service.dto.CategoryDto;
 import ru.practicum.event_service.dto.*;
 import ru.practicum.user_service.config.StatsClientConfig;
-import ru.practicum.events.model.Location;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.service.PublicEventsService;

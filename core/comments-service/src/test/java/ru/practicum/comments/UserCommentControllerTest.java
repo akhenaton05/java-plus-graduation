@@ -40,7 +40,6 @@ public class UserCommentControllerTest {
     @Test
     @SneakyThrows
     public void softDeleteTest() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");

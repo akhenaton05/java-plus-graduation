@@ -61,7 +61,7 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                 .where(event.id.eq(eventId))
                 .fetchOne();
 
-        if (foundEvent == null) {
+        if (Objects.isNull(foundEvent)) {
             throw new EntityNotFoundException("Event with id " + eventId + " not found");
         }
 
@@ -69,7 +69,7 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
         if (status == ParticipationRequestStatus.CONFIRMED) {
             try {
                 ResponseEntity<Integer> response = requestClient.getConfirmedRequestsCount(eventId);
-                confirmedCount = response.getBody() != null ? response.getBody() : 0;
+                confirmedCount = Objects.nonNull(response.getBody()) ? response.getBody() : 0;
             } catch (FeignException e) {
                 log.error("Failed to fetch confirmed requests count for event {}: {}", eventId, e.getMessage());
                 confirmedCount = 0;
@@ -146,13 +146,13 @@ public class EventRepositoryCustomImpl implements EventRepositoryCustom {
                 .where(event.id.eq(id))
                 .fetchOne();
 
-        if (eventResult == null) {
+        if (Objects.isNull(eventResult)) {
             return null;
         }
 
         // Получаем количество подтверждённых заявок через Feign-клиент
         Integer confirmedCount = requestClient.getConfirmedRequestsCount(id).getBody();
-        eventResult.setConfirmedRequests(confirmedCount != null ? confirmedCount : 0);
+        eventResult.setConfirmedRequests(Objects.nonNull(confirmedCount) ? confirmedCount : 0);
 
         return eventResult;
     }

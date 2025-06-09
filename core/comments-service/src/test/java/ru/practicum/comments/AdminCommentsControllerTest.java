@@ -39,7 +39,6 @@ public class AdminCommentsControllerTest {
     @Test
     @SneakyThrows
     public void deleteByIdTest() {
-        // Настройка моков
         when(statsClientConfig.getServiceId()).thenReturn("stats-service");
         ServiceInstance mockInstance = mock(ServiceInstance.class);
         when(mockInstance.getHost()).thenReturn("localhost");

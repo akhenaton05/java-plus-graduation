@@ -18,13 +18,11 @@ import ru.practicum.events.model.Event;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.model.Location;
 import ru.practicum.events.repository.EventRepository;
-import ru.practicum.user_service.dto.GetUserEventsDto;
 import ru.practicum.user_service.dto.UserShortDto;
 import ru.practicum.user_service.feign.UserClient;
 import ru.practicum.events.service.PrivateUserEventService;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -91,14 +89,11 @@ public class PrivateUserEventsIntegrationTest {
         event.setParticipantLimit(10);
         event.setRequestModeration(true);
 
-        // Save event to repository
         Event savedEvent = eventRepository.save(event);
-        Long eventId = savedEvent.getId(); // Get the generated ID
+        Long eventId = savedEvent.getId();
 
-        // Call service method
         EventFullDto fullEventDto = privateUserEventService.getUserEventById(1L, eventId);
 
-        // Assertions
         assertNotNull(fullEventDto, "EventFullDto should not be null");
         assertAll(
                 () -> assertEquals("New title", fullEventDto.getTitle()),
@@ -109,7 +104,6 @@ public class PrivateUserEventsIntegrationTest {
 
     @Test
     void updatingEvent() {
-        // Create and save an initial Event
         Event event = new Event();
         event.setTitle("Initial title");
         event.setAnnotation("annotation");
@@ -127,7 +121,6 @@ public class PrivateUserEventsIntegrationTest {
         Event savedEvent = eventRepository.save(event);
         Long eventId = savedEvent.getId();
 
-        // Update event
         UpdateEventUserRequest updateRequest = new UpdateEventUserRequest(
                 1L, "annotationannotationannotation", 1, "descrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescrdescr",
                 "2025-12-31 15:10:05", locationDto, true, 10, true, "CANCEL_REVIEW", "Title");

@@ -7,7 +7,5 @@ CREATE TABLE IF NOT EXISTS participation_request
     event_id BIGINT      NOT NULL,
     status   VARCHAR(50) NOT NULL,
     created  TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
---    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
---    FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE,
     CONSTRAINT unique_user_event UNIQUE (user_id, event_id) -- Запрещает дублирующиеся заявки
 );

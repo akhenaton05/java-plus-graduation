@@ -8,8 +8,4 @@ CREATE TABLE IF NOT EXISTS comments
     text     VARCHAR(255) NOT NULL,
     created  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status   VARCHAR(15) NOT NULL
---    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
---    FOREIGN KEY (event_id) REFERENCES events (id) ON DELETE CASCADE
--- CONSTRAINT unique_user_event UNIQUE (user_id, event_id)
--- Запрещает вторые комментарии, пока не уверен, что это надо запрещать
 );
