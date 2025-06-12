@@ -19,7 +19,7 @@ public class KafkaProducerFactory {
     private KafkaProducer<String, SpecificRecordBase> pr;
     private final KafkaProducerProperties config;
 
-    @Bean
+    @Bean(name = "customKafkaProducerFactory")
     public KafkaProducer<String, SpecificRecordBase> producer() {
         Properties properties = config.setProperties();
         if (properties == null) {

@@ -6,13 +6,14 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.KafkaException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaCollectorProducer {
-    private final KafkaProducer<String, SpecificRecordBase> kafkaProducer;
+    private final @Qualifier("customKafkaProducerFactory") KafkaProducer<String, SpecificRecordBase> kafkaProducer;
 
     public void send(String topic, SpecificRecordBase data) {
         try {
