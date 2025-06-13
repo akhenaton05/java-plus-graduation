@@ -1,0 +1,47 @@
+logging:
+  level:
+    ru.yandex.practicum.telemetry: TRACE
+    org:
+      springframework: ERROR
+      apache.kafka: WARN
+
+grpc:
+  server:
+    port: 0
+
+spring:
+  main:
+    web-application-type: none
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6542/ewm-stats
+    username: stat
+    password: stat
+  jpa:
+    hibernate:
+      ddl-auto: update
+    #show-sql: true #Показывать SQL-запросы в логах
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+kafka:
+  similarity-consumer:
+    properties:
+      bootstrap.servers: localhost:9092
+      group.id: analyzer-similarity
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: kafka.deserialization.EventSimilarityDeserializer
+    topic: stats.events-similarity.v1
+  action-consumer:
+    properties:
+      bootstrap.servers: localhost:9092
+      group.id: analyzer-actions
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: kafka.deserialization.UserActionDeserializer
+    topic: stats.user-actions.v1
