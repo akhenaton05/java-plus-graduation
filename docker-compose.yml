@@ -66,6 +66,25 @@ services:
     networks:
       - app-network
 
+  analyzer-db:
+    image: postgres:16.1
+    container_name: analyzer-db
+    ports:
+      - "6544:5432"
+    environment:
+      POSTGRES_USER: analyzer
+      POSTGRES_PASSWORD: analyzer
+      POSTGRES_DB: analyzer-stats
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      interval: 5s
+      retries: 10
+      timeout: 5s
+    volumes:
+      - analyzer_db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
@@ -73,3 +92,4 @@ networks:
 volumes:
   ewm_db_data: # Определяем том для ewm-db
   stats_db_data: # Определяем том для stats-db
+  analyzer_db_data:

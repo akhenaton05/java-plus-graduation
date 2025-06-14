@@ -24,9 +24,9 @@ spring:
       mode: always
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ewm-stats
-    username: stat
-    password: stat
+    url: jdbc:postgresql://localhost:6544/analyzer-stats
+    username: analyzer
+    password: analyzer
 
 kafka:
   similarity-consumer:
