@@ -23,10 +23,10 @@ spring:
     init:
       mode: always
   datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6544/analyzer-stats
-    username: analyzer
-    password: analyzer
+    url: jdbc:postgresql://localhost:6543/ewm-database
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
 
 kafka:
   similarity-consumer:
