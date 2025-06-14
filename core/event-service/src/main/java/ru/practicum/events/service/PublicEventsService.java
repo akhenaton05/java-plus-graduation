@@ -16,11 +16,13 @@ public interface PublicEventsService {
 
     int getEventsViews(long id, LocalDateTime eventDate);
 
-    EventFullDto getEventInfo(LookEventDto lookEventDto);
+    EventFullDto getEventInfo(Long eventId, Long userId);
 
-    List<EventShortDto> getFilteredEvents(SearchEventsParams searchEventsParams, LookEventDto lookEventDto);
+    List<EventShortDto> getFilteredEvents(SearchEventsParams searchEventsParams);
 
     EventFullDto getEventAnyStatusWithViews(Long id);
 
     EventFullDto getEventById(Long id);
+
+    void likeEvent(Long userId, Long eventId);
 }
