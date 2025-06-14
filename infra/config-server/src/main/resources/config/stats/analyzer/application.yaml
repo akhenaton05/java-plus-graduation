@@ -12,6 +12,8 @@ grpc:
 spring:
   application:
     name: analyzer
+  main:
+    web-application-type: none
   jpa:
     hibernate:
       ddl-auto: none
@@ -23,10 +25,10 @@ spring:
     init:
       mode: always
   datasource:
-    url: jdbc:postgresql://localhost:6543/ewm-database
-    username: user
-    password: password
-    driver-class-name: org.postgresql.Driver
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6544/analyzer-stats
+    username: analyzer
+    password: analyzer
 
 kafka:
   similarity-consumer:

@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import ru.practicum.config.KafkaProperties;
 
-@SpringBootApplication(scanBasePackages = "ru.practicum")
+@SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableConfigurationProperties(KafkaProperties.class)
 public class AnalyzerService {
