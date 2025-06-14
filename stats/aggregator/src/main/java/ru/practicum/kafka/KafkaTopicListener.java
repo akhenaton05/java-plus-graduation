@@ -22,7 +22,7 @@ public class KafkaTopicListener {
             groupId = "aggregator-group",
             containerFactory = "kafkaListenerContainerFactory")
     public void handleEvent(UserActionAvro userActionAvro) {
-        log.debug("Received event: {}", userActionAvro);
+        log.info("Received event: {}", userActionAvro);
         List<EventSimilarityAvro> similarities = userActionAggregator.updateState(userActionAvro);
         similarities.forEach(similarity -> {
             log.info("Similarity calculated for events {} and {}: score={}",

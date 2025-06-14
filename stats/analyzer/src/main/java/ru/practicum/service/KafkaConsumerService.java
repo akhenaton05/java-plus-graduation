@@ -25,6 +25,7 @@ public class KafkaConsumerService {
 
     @Transactional
     public void handleSimilarity(EventSimilarityAvro avro) {
+        log.info("Processing similarity event: ");
         log.debug("Processing similarity event: {}", avro);
         EventSimilarity similarity = new EventSimilarity();
         EventSimilarity.EventSimilarityId id = new EventSimilarity.EventSimilarityId();
@@ -39,7 +40,8 @@ public class KafkaConsumerService {
 
     @Transactional
     public void handleUserAction(UserActionAvro avro) {
-        log.debug("Processing user action: {}", avro);
+        log.info("Processing user action: userId={}, eventId={}, actionType={}, timestamp={}",
+                avro.getUserId(), avro.getEventId(), avro.getActionType(), avro.getTimestamp());
         UserAction.UserInteractionId id = new UserAction.UserInteractionId();
         id.setUserId(avro.getUserId());
         id.setEventId(avro.getEventId());
@@ -50,11 +52,15 @@ public class KafkaConsumerService {
         action.setActionType(avro.getActionType().toString());
         double newWeight = getWeightFromActionType(avro.getActionType());
 
-        // Обновляем только если новый вес больше текущего
         if (Objects.isNull(action.getWeight()) || newWeight > action.getWeight()) {
             action.setWeight(newWeight);
             action.setTimestamp(avro.getTimestamp());
             interactionRepository.save(action);
+            log.info("Saved user action: userId={}, eventId={}, weight={}, actionType={}",
+                    id.getUserId(), id.getEventId(), action.getWeight(), action.getActionType());
+        } else {
+            log.info("Skipped saving user action: userId={}, eventId={}, newWeight={} <= currentWeight={}",
+                    id.getUserId(), id.getEventId(), newWeight, action.getWeight());
         }
     }
 
@@ -67,7 +73,7 @@ public class KafkaConsumerService {
             case LIKE:
                 return 1.0;
             default:
-                throw new IllegalArgumentException("Unknown action type: " + actionType);
+                throw new IllegalArgumentException("Неизвестный тип действия: " + actionType);
         }
     }
 }
