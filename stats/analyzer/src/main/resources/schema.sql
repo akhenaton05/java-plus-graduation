@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS event_similarity;
-DROP TABLE IF EXISTS user_action;
+--DROP TABLE IF EXISTS event_similarity;
+--DROP TABLE IF EXISTS user_action;
 
 CREATE TABLE IF NOT EXISTS event_similarity (
     event_a BIGINT NOT NULL,
