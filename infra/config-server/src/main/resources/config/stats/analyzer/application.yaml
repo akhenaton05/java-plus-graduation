@@ -10,6 +10,8 @@ grpc:
     port: 0
 
 spring:
+  main:
+    web-application-type: none
   application:
     name: analyzer
   jpa:
@@ -24,13 +26,10 @@ spring:
     init:
       mode: always
   datasource:
-    url: jdbc:postgresql://localhost:5435/analyzer-db
-    username: analyzer
-    password: analyzer
+    url: jdbc:postgresql://localhost:6542/ewm-stats
+    username: stat
+    password: stat
     driver-class-name: org.postgresql.Driver
-
-server:
-  port: 0
 
 kafka:
   similarity-consumer:
