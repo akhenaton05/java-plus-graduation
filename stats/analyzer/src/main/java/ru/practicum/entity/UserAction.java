@@ -1,6 +1,7 @@
 package ru.practicum.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,8 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "user_action")
-@Getter
-@Setter
+@Data
 public class UserAction {
     @EmbeddedId
     private UserInteractionId id;
