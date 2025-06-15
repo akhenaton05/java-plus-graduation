@@ -2,8 +2,8 @@ grpc:
   server:
     port: 0
 
-server:
-  port: 0
+#server:
+#  port: 0
 
 kafka:
   producer:
@@ -17,6 +17,8 @@ kafka:
 spring:
   application:
     name: collector
+  main:
+    web-application-type: none
   jpa:
     hibernate:
       ddl-auto: none
