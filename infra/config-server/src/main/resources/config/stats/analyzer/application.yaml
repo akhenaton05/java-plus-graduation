@@ -29,7 +29,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
     init:
-      mode: always
+      mode: never
   datasource:
     url: jdbc:postgresql://localhost:6543/ewm-database
     username: user
