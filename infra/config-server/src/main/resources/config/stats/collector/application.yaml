@@ -13,23 +13,3 @@ kafka:
       value_serialize_class: kafka.serialization.AvroSerializer
     topics:
       user-actions: stats.user-actions.v1
-
-spring:
-  application:
-    name: collector
-  jpa:
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        format_sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-  sql:
-    init:
-      mode: always
-      schema-locations: classpath:schema.sql
-  datasource:
-    url: jdbc:postgresql://localhost:6543/ewm-database
-    username: user
-    password: password
-    driver-class-name: org.postgresql.Driver
