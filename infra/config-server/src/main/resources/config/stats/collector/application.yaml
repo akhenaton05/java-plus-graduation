@@ -29,7 +29,7 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
   datasource:
-    url: jdbc:postgresql://postgres:5432/ewm-database
+    url: jdbc:postgresql://localhost:6543/ewm-database
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
