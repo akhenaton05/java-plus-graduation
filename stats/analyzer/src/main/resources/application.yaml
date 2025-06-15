@@ -24,8 +24,4 @@ eureka:
 
 logging:
   level:
-    org.springframework.jdbc: DEBUG
-    com.zaxxer.hikari: DEBUG
-    org.hibernate: DEBUG
-    com.netflix.discovery: DEBUG
-    org.springframework.cloud: DEBUG
+    org.springframework.boot.context.config: DEBUG
