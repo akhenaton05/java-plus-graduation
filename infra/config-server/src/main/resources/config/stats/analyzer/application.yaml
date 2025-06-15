@@ -1,14 +1,9 @@
 logging:
   level:
-    ru.yandex.practicum.telemetry: TRACE # Оставляем TRACE для вашего пакета
-    org.springframework: DEBUG # Увеличиваем уровень до DEBUG для Spring (было ERROR)
-    org.springframework.jdbc: DEBUG # Логирование JDBC-операций
-    org.springframework.orm.jpa: DEBUG # Логирование JPA (Hibernate)
-    com.zaxxer.hikari: DEBUG # Логирование HikariCP (пул соединений)
-    org.postgresql: DEBUG # Логирование драйвера PostgreSQL
-    org.hibernate.SQL: DEBUG # Логирование всех SQL-запросов
-    org.hibernate.orm.jdbc.bind: TRACE # Логирование привязки параметров к SQL-запросам
-    org.apache.kafka: INFO # Оставляем INFO для Kafka
+    ru.yandex.practicum.telemetry: TRACE
+    org:
+      springframework: ERROR
+      apache.kafka: INFO
 
 grpc:
   server:
@@ -29,9 +24,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
     init:
-      mode: never
+      mode: always
   datasource:
-    url: jdbc:postgresql://postgres:5432/ewm-database
+    url: jdbc:postgresql://postgres:6543/ewm-database
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
