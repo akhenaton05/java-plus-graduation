@@ -21,7 +21,3 @@ eureka:
     hostname: localhost
     instance-id: "${spring.application.name}:${random.value}"
     leaseRenewalIntervalInSeconds: 10
-
-logging:
-  level:
-    org.springframework.boot.context.config: DEBUG

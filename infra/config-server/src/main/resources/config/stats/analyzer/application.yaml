@@ -1,16 +1,9 @@
-logging:
-  level:
-    ru.yandex.practicum.telemetry: TRACE
-    org:
-      springframework: ERROR
-      apache.kafka: INFO
-
 grpc:
   server:
     port: 0
 
 server:
-  port: 0
+  port: 9044
 
 spring:
   application:
