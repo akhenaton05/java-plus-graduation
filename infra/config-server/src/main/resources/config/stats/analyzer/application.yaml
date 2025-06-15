@@ -24,9 +24,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
     init:
-      mode: never
+      mode: always
   datasource:
-    url: jdbc:postgresql://localhost:6543/ewm-database
+    url: jdbc:postgresql://postgres:5432/ewm-database
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
