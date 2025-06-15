@@ -27,6 +27,7 @@ spring:
   sql:
     init:
       mode: always
+      schema-locations: classpath:schema.sql
   datasource:
     url: jdbc:postgresql://localhost:6543/ewm-database
     username: user
