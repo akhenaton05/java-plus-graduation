@@ -1,9 +1,9 @@
+server:
+  port: 0
+
 grpc:
   server:
     port: 0
-
-server:
-  port: 9044
 
 spring:
   application:

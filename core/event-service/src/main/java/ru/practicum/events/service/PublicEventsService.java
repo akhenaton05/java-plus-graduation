@@ -14,7 +14,7 @@ public interface PublicEventsService {
 
     Event getEvent(Long id);
 
-    int getEventsViews(long id, LocalDateTime eventDate);
+//    int getEventsViews(long id, LocalDateTime eventDate);
 
     EventFullDto getEventInfo(Long eventId, Long userId);
 

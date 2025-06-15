@@ -20,7 +20,6 @@ import ru.practicum.ewm.stats.proto.RecommendedEventProto;
 import ru.practicum.request_service.feign.RequestClient;
 import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.user_service.config.StatsClientConfig;
-import ru.practicum.controller.ClientController;
 import ru.practicum.dto.ReadEndpointHitDto;
 import ru.practicum.errors.EventNotPublishedException;
 import ru.practicum.events.mapper.EventMapper;
@@ -42,7 +41,7 @@ import java.util.stream.Stream;
 public class PublicEventsServiceImpl implements PublicEventsService {
 
     private final EventRepository eventRepository;
-    private final ClientController clientController;
+    //private final ClientController clientController;
     private final EventMapper eventMapper;
     private final RequestClient requestClient;
     private final RecommendationsClient recommendationsClient;
@@ -57,7 +56,7 @@ public class PublicEventsServiceImpl implements PublicEventsService {
                                    RecommendationsClient recommendationsClient,
                                    UserActionClient collectorClient) {
         this.eventRepository = eventRepository;
-        this.clientController = new ClientController(discoveryClient, statsClientConfig.getServiceId());
+        //this.clientController = new ClientController(discoveryClient, statsClientConfig.getServiceId());
         this.eventMapper = eventMapper;
         this.requestClient = requestClient;
         this.recommendationsClient = recommendationsClient;
@@ -68,15 +67,15 @@ public class PublicEventsServiceImpl implements PublicEventsService {
     public Event getEvent(Long id) {
         return eventRepository.findEventWithStatus(id, ParticipationRequestStatus.CONFIRMED);
     }
-
-    @Override
-    public int getEventsViews(long id, LocalDateTime publishedOn) {
-        List<String> uris = List.of("/events/" + id);
-        List<ReadEndpointHitDto> res = clientController.getHits(publishedOn.format(DateConfig.FORMATTER),
-                LocalDateTime.now().format(DateConfig.FORMATTER), uris, true);
-        log.info("\nPublicEventsServiceImpl.getEventsViews: res {}", res);
-        return (CollectionUtils.isEmpty(res)) ? 0 : res.getFirst().getHits();
-    }
+//
+//    @Override
+//    public int getEventsViews(long id, LocalDateTime publishedOn) {
+//        List<String> uris = List.of("/events/" + id);
+//        List<ReadEndpointHitDto> res = clientController.getHits(publishedOn.format(DateConfig.FORMATTER),
+//                LocalDateTime.now().format(DateConfig.FORMATTER), uris, true);
+//        log.info("\nPublicEventsServiceImpl.getEventsViews: res {}", res);
+//        return (CollectionUtils.isEmpty(res)) ? 0 : res.getFirst().getHits();
+//    }
 
     @Override
     public EventFullDto getEventAnyStatusWithViews(Long id) {
