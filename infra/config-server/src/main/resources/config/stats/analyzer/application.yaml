@@ -12,8 +12,8 @@ grpc:
 spring:
   application:
     name: analyzer
-  main:
-    web-application-type: none
+  server:
+    port: 0
   jpa:
     hibernate:
       ddl-auto: none
