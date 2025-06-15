@@ -70,20 +70,16 @@ services:
     image: postgres:16.1
     container_name: analyzer-db
     ports:
-      - "6544:5432"
+      - "5435:5432"
     environment:
-      POSTGRES_USER: analyzer
-      POSTGRES_PASSWORD: analyzer
-      POSTGRES_DB: analyzer-stats
-    healthcheck:
+      - POSTGRES_DB=analyzer-db
+      - POSTGRES_USER=analyzer
+      - POSTGRES_PASSWORD=analyzer
+    healthcheck: #секция  обеспечения того, что другие контейнеры (например, ваше приложение) не будут пытаться подключиться к базе данных, пока она не будет готова.
       test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
       interval: 5s
       retries: 10
-      timeout: 5s
-    volumes:
-      - analyzer_db_data:/var/lib/postgresql/data
-    networks:
-      - app-network
 
 networks:
   app-network:

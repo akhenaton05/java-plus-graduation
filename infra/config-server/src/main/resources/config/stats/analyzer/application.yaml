@@ -9,27 +9,28 @@ grpc:
   server:
     port: 0
 
-server:
-  port: 0
-
 spring:
   application:
     name: analyzer
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: true #Показывать SQL-запросы в логах
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
   sql:
     init:
       mode: always
   datasource:
-    url: jdbc:postgresql://localhost:6543/ewm-database
-    username: user
-    password: password
+    url: jdbc:postgresql://localhost:5435/analyzer-db
+    username: analyzer
+    password: analyzer
     driver-class-name: org.postgresql.Driver
+
+server:
+  port: 0
 
 kafka:
   similarity-consumer:
