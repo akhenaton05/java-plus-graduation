@@ -1,0 +1,45 @@
+server:
+  port: 0
+
+grpc:
+  server:
+    port: 0
+
+spring:
+  application:
+    name: analyzer
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  sql:
+    init:
+      mode: never
+  datasource:
+    url: jdbc:postgresql://localhost:6543/ewm-database
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+kafka:
+  similarity-consumer:
+    properties:
+      bootstrap.servers: localhost:9092
+      group.id: analyzer-similarity
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: kafka.deserialization.EventSimilarityDeserializer
+    topic: stats.events-similarity.v1
+  action-consumer:
+    properties:
+      bootstrap.servers: localhost:9092
+      group.id: analyzer-actions
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: kafka.deserialization.UserActionDeserializer
+    topic: stats.user-actions.v1
