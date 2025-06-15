@@ -7,7 +7,7 @@ CREATE TABLE event_similarity (
     score DOUBLE PRECISION NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
     PRIMARY KEY (event_a, event_b)
---    CONSTRAINT ordered_ids CHECK (event_a < event_b)
+
 );
 
 CREATE TABLE user_action (
