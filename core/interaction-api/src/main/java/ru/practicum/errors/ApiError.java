@@ -1,7 +1,7 @@
 package ru.practicum.errors;
 
 import lombok.Data;
-import ru.practicum.config.DateConfig;
+import ru.practicum.user_service.config.DateConfig;
 
 import java.time.LocalDateTime;
 import java.util.List;
