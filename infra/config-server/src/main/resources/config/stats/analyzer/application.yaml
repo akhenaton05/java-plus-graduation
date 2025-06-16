@@ -26,6 +26,13 @@ spring:
     username: analyzer
     password: analyzer
     driver-class-name: org.postgresql.Driver
+    hikari:
+      initialization-fail-timeout: 0
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 300000
+      max-lifetime: 1800000
 
 kafka:
   similarity-consumer:
