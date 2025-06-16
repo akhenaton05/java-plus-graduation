@@ -24,7 +24,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/analyzer-db
     username: analyzer
-    password: analyzer
+    password: password
     driver-class-name: org.postgresql.Driver
 
 kafka:
