@@ -20,29 +20,12 @@ spring:
       mode: always
       schema-locations: classpath:schema.sql
       platform: postgresql
-      continue-on-error: true
+      #continue-on-error: true
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/analyzer-db}
-    username: ${SPRING_DATASOURCE_USERNAME:analyzer}
-    password: ${SPRING_DATASOURCE_PASSWORD:analyzer}
+    url: jdbc:postgresql://localhost:5432/analyzer-db
+    username: analyzer
+    password: analyzer
     driver-class-name: org.postgresql.Driver
-    hikari:
-      initialization-fail-timeout: 0
-      connection-timeout: 30000
-      maximum-pool-size: 10
-      minimum-idle: 2
-      idle-timeout: 300000
-      max-lifetime: 1800000
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://localhost:8761/eureka/}
-    register-with-eureka: true
-    fetch-registry: true
-  instance:
-    metadata-map:
-      gRPC_port: ${grpc.server.port}
 
 kafka:
   similarity-consumer:
