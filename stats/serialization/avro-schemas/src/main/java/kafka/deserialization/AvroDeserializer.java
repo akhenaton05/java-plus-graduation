@@ -9,6 +9,8 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
+import java.util.Objects;
+
 public class AvroDeserializer<T extends SpecificRecordBase> implements Deserializer<T> {
     private final DecoderFactory decoderFactory;
     private final DatumReader<T> reader;
@@ -25,7 +27,7 @@ public class AvroDeserializer<T extends SpecificRecordBase> implements Deseriali
     @Override
     public T deserialize(String topic, byte[] data) {
         try {
-            if (data != null) {
+            if (Objects.nonNull(data)) {
                 BinaryDecoder decoder = decoderFactory.binaryDecoder(data, null);
                 return this.reader.read(null, decoder);
             }

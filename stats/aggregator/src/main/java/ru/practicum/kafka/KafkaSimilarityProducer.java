@@ -7,6 +7,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import ru.practicum.config.KafkaProperties;
 
+import java.util.Objects;
+
 
 @Slf4j
 @Service
@@ -19,7 +21,7 @@ public class KafkaSimilarityProducer {
     public void send(SpecificRecordBase snapshot) {
         String topic = kafkaProperties.getProducer().getTopic();
         kafkaTemplate.send(topic, snapshot).whenComplete((result, ex) -> {
-            if (ex != null) {
+            if (Objects.nonNull(ex)) {
                 log.error("Failed to send snapshot to Kafka: {}", snapshot, ex);
             } else if (result != null) {
                 log.debug("Snapshot sent to Kafka: partition={}, offset={}",

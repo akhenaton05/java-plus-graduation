@@ -9,11 +9,7 @@ import ru.practicum.ewm.stats.proto.RecommendedEventProto;
 import ru.practicum.repository.EventSimilarityRepository;
 import ru.practicum.repository.UserInteractionRepository;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,7 +70,7 @@ public class RecommendationService {
                                 .filter(a -> a.getId().getEventId().equals(neighborEventId))
                                 .findFirst()
                                 .orElse(null);
-                        if (action != null) {
+                        if (Objects.nonNull(action)) {
                             weightedSum += neighbor.getScore() * action.getWeight();
                             similaritySum += neighbor.getScore();
                         }
@@ -120,7 +116,7 @@ public class RecommendationService {
     public Stream<RecommendedEventProto> getInteractionsCount(List<Long> eventIds) {
         log.info("Calculating interactions weight for eventIds={}", eventIds);
         try {
-            if (eventIds == null || eventIds.isEmpty()) {
+            if (Objects.isNull(eventIds) || eventIds.isEmpty()) {
                 log.warn("Empty eventIds list provided");
                 return Stream.empty();
             }

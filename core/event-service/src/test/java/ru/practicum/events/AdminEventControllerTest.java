@@ -48,89 +48,89 @@ public class AdminEventControllerTest {
     @MockBean
     private StatsClientConfig statsClientConfig;
 
-//    private final EventFullDto eventDto = EventFullDto.builder()
-//            .id(1L)
-//            .title("Test Event")
-//            .annotation("Test Annotation")
-//            .description("Detailed description")
-//            .eventDate(LocalDateTime.now().plusDays(1).toString())
-//            .paid(false)
-//            .participantLimit(100)
-//            .confirmedRequests(10)
-//            .views(200)
-//            .state(StateEvent.PENDING)
-//            .createdOn(LocalDateTime.now().toString())
-//            .publishedOn(LocalDateTime.now().plusHours(1).toString())
-//            .build();
-//
-//    private final UpdateEventAdminRequest updateEventRequest = UpdateEventAdminRequest.builder()
-//            .title("Updated Title")
-//            .description("12345".repeat(5))
-//            .eventDate(LocalDateTime.now().plusDays(2))
-//            .paid(false)
-//            .participantLimit(50)
-//            .build();
-//
-//    @Test
-//    @SneakyThrows
-//    public void getEventsTest() {
-//        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
-//        ServiceInstance mockInstance = mock(ServiceInstance.class);
-//        when(mockInstance.getHost()).thenReturn("localhost");
-//        when(mockInstance.getPort()).thenReturn(9090);
-//        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
-//
-//        when(adminEventService.getEvents(any(), any(), any(), any(), any(), anyInt(), anyInt()))
-//                .thenReturn(List.of(eventDto));
-//
-//        mockMvc.perform(get("/admin/events")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .characterEncoding(StandardCharsets.UTF_8))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0].id", is(eventDto.getId()), Long.class))
-//                .andExpect(jsonPath("$[0].title", is(eventDto.getTitle())))
-//                .andExpect(jsonPath("$[0].annotation", is(eventDto.getAnnotation())))
-//                .andExpect(jsonPath("$[0].description", is(eventDto.getDescription())))
-//                .andExpect(jsonPath("$[0].eventDate", is(eventDto.getEventDate())))
-//                .andExpect(jsonPath("$[0].paid", is(eventDto.isPaid())))
-//                .andExpect(jsonPath("$[0].participantLimit", is(eventDto.getParticipantLimit())))
-//                .andExpect(jsonPath("$[0].confirmedRequests", is(eventDto.getConfirmedRequests())))
-//                .andExpect(jsonPath("$[0].views", is(eventDto.getViews())))
-//                .andExpect(jsonPath("$[0].state", is(eventDto.getState().toString())))
-//                .andExpect(jsonPath("$[0].createdOn", is(eventDto.getCreatedOn())))
-//                .andExpect(jsonPath("$[0].publishedOn", is(eventDto.getPublishedOn())));
-//    }
-//
-//    @Test
-//    @SneakyThrows
-//    public void updateEventTest() {
-//        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
-//        ServiceInstance mockInstance = mock(ServiceInstance.class);
-//        when(mockInstance.getHost()).thenReturn("localhost");
-//        when(mockInstance.getPort()).thenReturn(9090);
-//        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
-//
-//        when(adminEventService.updateEvent(anyLong(), any(UpdateEventAdminRequest.class)))
-//                .thenReturn(eventDto);
-//
-//        mockMvc.perform(patch("/admin/events/{eventId}", eventDto.getId())
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(updateEventRequest))
-//                        .characterEncoding(StandardCharsets.UTF_8))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id", is(eventDto.getId()), Long.class))
-//                .andExpect(jsonPath("$.title", is(eventDto.getTitle())))
-//                .andExpect(jsonPath("$.annotation", is(eventDto.getAnnotation())))
-//                .andExpect(jsonPath("$.description", is(eventDto.getDescription())))
-//                .andExpect(jsonPath("$.eventDate", is(eventDto.getEventDate())))
-//                .andExpect(jsonPath("$.paid", is(eventDto.isPaid())))
-//                .andExpect(jsonPath("$.participantLimit", is(eventDto.getParticipantLimit())))
-//                .andExpect(jsonPath("$.confirmedRequests", is(eventDto.getConfirmedRequests())))
-//                .andExpect(jsonPath("$.views", is(eventDto.getViews())))
-//                .andExpect(jsonPath("$.state", is(eventDto.getState().toString())))
-//                .andExpect(jsonPath("$.createdOn", is(eventDto.getCreatedOn())))
-//                .andExpect(jsonPath("$.publishedOn", is(eventDto.getPublishedOn())));
-//    }
+    private final EventFullDto eventDto = EventFullDto.builder()
+            .id(1L)
+            .title("Test Event")
+            .annotation("Test Annotation")
+            .description("Detailed description")
+            .eventDate(LocalDateTime.now().plusDays(1).toString())
+            .paid(false)
+            .participantLimit(100)
+            .confirmedRequests(10)
+            .rating(200.0)
+            .state(StateEvent.PENDING)
+            .createdOn(LocalDateTime.now().toString())
+            .publishedOn(LocalDateTime.now().plusHours(1).toString())
+            .build();
+
+    private final UpdateEventAdminRequest updateEventRequest = UpdateEventAdminRequest.builder()
+            .title("Updated Title")
+            .description("12345".repeat(5))
+            .eventDate(LocalDateTime.now().plusDays(2))
+            .paid(false)
+            .participantLimit(50)
+            .build();
+
+    @Test
+    @SneakyThrows
+    public void getEventsTest() {
+        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
+        ServiceInstance mockInstance = mock(ServiceInstance.class);
+        when(mockInstance.getHost()).thenReturn("localhost");
+        when(mockInstance.getPort()).thenReturn(9090);
+        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
+
+        when(adminEventService.getEvents(any(), any(), any(), any(), any(), anyInt(), anyInt()))
+                .thenReturn(List.of(eventDto));
+
+        mockMvc.perform(get("/admin/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id", is(eventDto.getId()), Long.class))
+                .andExpect(jsonPath("$[0].title", is(eventDto.getTitle())))
+                .andExpect(jsonPath("$[0].annotation", is(eventDto.getAnnotation())))
+                .andExpect(jsonPath("$[0].description", is(eventDto.getDescription())))
+                .andExpect(jsonPath("$[0].eventDate", is(eventDto.getEventDate())))
+                .andExpect(jsonPath("$[0].paid", is(eventDto.isPaid())))
+                .andExpect(jsonPath("$[0].participantLimit", is(eventDto.getParticipantLimit())))
+                .andExpect(jsonPath("$[0].confirmedRequests", is(eventDto.getConfirmedRequests())))
+                .andExpect(jsonPath("$[0].rating", is(eventDto.getRating())))
+                .andExpect(jsonPath("$[0].state", is(eventDto.getState().toString())))
+                .andExpect(jsonPath("$[0].createdOn", is(eventDto.getCreatedOn())))
+                .andExpect(jsonPath("$[0].publishedOn", is(eventDto.getPublishedOn())));
+    }
+
+    @Test
+    @SneakyThrows
+    public void updateEventTest() {
+        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
+        ServiceInstance mockInstance = mock(ServiceInstance.class);
+        when(mockInstance.getHost()).thenReturn("localhost");
+        when(mockInstance.getPort()).thenReturn(9090);
+        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
+
+        when(adminEventService.updateEvent(anyLong(), any(UpdateEventAdminRequest.class)))
+                .thenReturn(eventDto);
+
+        mockMvc.perform(patch("/admin/events/{eventId}", eventDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateEventRequest))
+                        .characterEncoding(StandardCharsets.UTF_8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(eventDto.getId()), Long.class))
+                .andExpect(jsonPath("$.title", is(eventDto.getTitle())))
+                .andExpect(jsonPath("$.annotation", is(eventDto.getAnnotation())))
+                .andExpect(jsonPath("$.description", is(eventDto.getDescription())))
+                .andExpect(jsonPath("$.eventDate", is(eventDto.getEventDate())))
+                .andExpect(jsonPath("$.paid", is(eventDto.isPaid())))
+                .andExpect(jsonPath("$.participantLimit", is(eventDto.getParticipantLimit())))
+                .andExpect(jsonPath("$.confirmedRequests", is(eventDto.getConfirmedRequests())))
+                .andExpect(jsonPath("$.rating", is(eventDto.getRating())))
+                .andExpect(jsonPath("$.state", is(eventDto.getState().toString())))
+                .andExpect(jsonPath("$.createdOn", is(eventDto.getCreatedOn())))
+                .andExpect(jsonPath("$.publishedOn", is(eventDto.getPublishedOn())));
+    }
 }

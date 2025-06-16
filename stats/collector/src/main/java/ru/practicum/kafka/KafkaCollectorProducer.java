@@ -9,6 +9,8 @@ import org.apache.kafka.common.KafkaException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,7 +21,7 @@ public class KafkaCollectorProducer {
         try {
             kafkaProducer.send(new ProducerRecord<>(topic, data),
                     (metadata, e) -> {
-                        if (e != null) {
+                        if (Objects.nonNull(e)) {
                             log.error("[{}] Ошибка отправки: {}", topic, e.getMessage());
                         } else {
                             log.info("Отправлено в {} - {}", topic, metadata.partition());

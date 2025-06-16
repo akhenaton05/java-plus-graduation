@@ -25,27 +25,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = CommentsService.class)
 @AutoConfigureMockMvc
 public class AdminCommentsControllerTest {
-//    @Autowired
-//    private ObjectMapper objectMapper;
-//    @Autowired
-//    private MockMvc mockMvc;
-//    @MockBean
-//    private CommentService commentService;
-//    @MockBean
-//    private DiscoveryClient discoveryClient;
-//    @MockBean
-//    private StatsClientConfig statsClientConfig;
-//
-//    @Test
-//    @SneakyThrows
-//    public void deleteByIdTest() {
-//        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
-//        ServiceInstance mockInstance = mock(ServiceInstance.class);
-//        when(mockInstance.getHost()).thenReturn("localhost");
-//        when(mockInstance.getPort()).thenReturn(9090);
-//        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
-//
-//        mockMvc.perform(delete("/admin/comments/" + 1L))
-//                .andExpect(status().isNoContent());
-//    }
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private CommentService commentService;
+    @MockBean
+    private DiscoveryClient discoveryClient;
+    @MockBean
+    private StatsClientConfig statsClientConfig;
+
+    @Test
+    @SneakyThrows
+    public void deleteByIdTest() {
+        when(statsClientConfig.getServiceId()).thenReturn("stats-service");
+        ServiceInstance mockInstance = mock(ServiceInstance.class);
+        when(mockInstance.getHost()).thenReturn("localhost");
+        when(mockInstance.getPort()).thenReturn(9090);
+        when(discoveryClient.getInstances("stats-service")).thenReturn(java.util.List.of(mockInstance));
+
+        mockMvc.perform(delete("/admin/comments/" + 1L))
+                .andExpect(status().isNoContent());
+    }
 }

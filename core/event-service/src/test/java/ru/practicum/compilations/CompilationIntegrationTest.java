@@ -61,130 +61,130 @@ public class CompilationIntegrationTest {
         });
     }
 
-//    @Test
-//    @Transactional
-//    public void addCompilationTest() {
-//        List<Event> events = eventRepository.findAllById(List.of(3L, 4L));
-//        events.forEach(event -> {
-//            event.setConfirmedRequests(10);
-//            event.setViews(20);
-//        });
-//
-//        when(publicEventsService.getEventsByListIds(List.of(3L, 4L))).thenReturn(events);
-//
-//        NewCompilationDto newCompilationDto = new NewCompilationDto(Set.of(3L, 4L), false, "Title");
-//        CompilationDto compilation = compilationService.add(newCompilationDto);
-//
-//        assertAll(
-//                () -> assertEquals(newCompilationDto.getPinned(), compilation.getPinned()),
-//                () -> assertEquals(newCompilationDto.getTitle(), compilation.getTitle()),
-//                () -> assertNotNull(compilation.getId())
-//        );
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void updatePinnedCompilationTest() {
-//        Event event = eventRepository.findById(1L).orElseThrow();
-//        event.setConfirmedRequests(15);
-//        event.setViews(15);
-//
-//        when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
-//
-//        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(null, true, null);
-//        CompilationDto compilation = compilationService.update(1L, updateCompilationRequest);
-//
-//        assertAll(
-//                () -> assertNotNull(compilation.getEvents()),
-//                () -> assertEquals(updateCompilationRequest.getPinned(), compilation.getPinned()),
-//                () -> assertEquals(1L, compilation.getId())
-//        );
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void updateTitleCompilationTest() {
-//        Event event = eventRepository.findById(1L).orElseThrow();
-//        event.setConfirmedRequests(15);
-//        event.setViews(15);
-//
-//        when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
-//
-//        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(null, null, "New title");
-//        CompilationDto compilation = compilationService.update(1L, updateCompilationRequest);
-//
-//        assertAll(
-//                () -> assertNotNull(compilation.getEvents()),
-//                () -> assertNotNull(compilation.getPinned()),
-//                () -> assertEquals(updateCompilationRequest.getTitle(), compilation.getTitle()),
-//                () -> assertEquals(1L, compilation.getId())
-//        );
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void updateEventsCompilationTest() {
-//        Event event = eventRepository.findById(2L).orElseThrow();
-//        event.setConfirmedRequests(15);
-//        event.setViews(15);
-//
-//        when(publicEventsService.getEventsByListIds(List.of(2L))).thenReturn(List.of(event));
-//
-//        Set<Long> events = new HashSet<>();
-//        events.add(2L);
-//
-//        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(events, null, null);
-//        CompilationDto compilation = compilationService.update(2L, updateCompilationRequest);
-//        List<Long> eventsId = compilation.getEvents().stream()
-//                .map(eventShortDto -> eventShortDto.getId())
-//                .collect(toList());
-//
-//        assertAll(
-//                () -> assertEquals(1, compilation.getEvents().size()),
-//                () -> assertTrue(eventsId.contains(2L))
-//        );
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void deleteCompilationTest() {
-//        compilationService.delete(3L);
-//
-//        assertFalse(compilationRepository.existsById(3L));
-//    }
-//
-//    @Test
-//    public void deleteCompilationWithWrongIdTest() {
-//        assertThrows(EntityNotFoundException.class, () -> compilationService.delete(1000L));
-//    }
-//
-//    @Test
-//    public void getCompilationTest() {
-//        Event event = eventRepository.findById(1L).orElseThrow();
-//        event.setConfirmedRequests(15);
-//        event.setViews(15);
-//
-//        when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
-//
-//        CompilationDto compilation = compilationService.getById(1L);
-//
-//        assertAll(
-//                () -> assertEquals(1L, compilation.getId()),
-//                () -> assertEquals(1, compilation.getEvents().size())
-//        );
-//    }
-//
-//    @Test
-//    public void getCompilationPinnedTrueTest() {
-//        Filter params = new Filter(true, 0, 10);
-//        List<CompilationDto> compilationList = compilationService.get(params);
-//        List<Boolean> pinned = compilationList.stream().map(CompilationDto::getPinned).collect(toList());
-//
-//        assertAll(
-//                () -> assertFalse(compilationList.isEmpty()),
-//                () -> assertFalse(pinned.contains(false))
-//        );
-//    }
+    @Test
+    @Transactional
+    public void addCompilationTest() {
+        List<Event> events = eventRepository.findAllById(List.of(3L, 4L));
+        events.forEach(event -> {
+            event.setConfirmedRequests(10);
+            event.setRating(20.0);
+        });
+
+        when(publicEventsService.getEventsByListIds(List.of(3L, 4L))).thenReturn(events);
+
+        NewCompilationDto newCompilationDto = new NewCompilationDto(Set.of(3L, 4L), false, "Title");
+        CompilationDto compilation = compilationService.add(newCompilationDto);
+
+        assertAll(
+                () -> assertEquals(newCompilationDto.getPinned(), compilation.getPinned()),
+                () -> assertEquals(newCompilationDto.getTitle(), compilation.getTitle()),
+                () -> assertNotNull(compilation.getId())
+        );
+    }
+
+    @Test
+    @Transactional
+    public void updatePinnedCompilationTest() {
+        Event event = eventRepository.findById(1L).orElseThrow();
+        event.setConfirmedRequests(15);
+        event.setRating(15.0);
+
+        when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
+
+        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(null, true, null);
+        CompilationDto compilation = compilationService.update(1L, updateCompilationRequest);
+
+        assertAll(
+                () -> assertNotNull(compilation.getEvents()),
+                () -> assertEquals(updateCompilationRequest.getPinned(), compilation.getPinned()),
+                () -> assertEquals(1L, compilation.getId())
+        );
+    }
+
+    @Test
+    @Transactional
+    public void updateTitleCompilationTest() {
+        Event event = eventRepository.findById(1L).orElseThrow();
+        event.setConfirmedRequests(15);
+        event.setRating(15.0);
+
+        when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
+
+        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(null, null, "New title");
+        CompilationDto compilation = compilationService.update(1L, updateCompilationRequest);
+
+        assertAll(
+                () -> assertNotNull(compilation.getEvents()),
+                () -> assertNotNull(compilation.getPinned()),
+                () -> assertEquals(updateCompilationRequest.getTitle(), compilation.getTitle()),
+                () -> assertEquals(1L, compilation.getId())
+        );
+    }
+
+    @Test
+    @Transactional
+    public void updateEventsCompilationTest() {
+        Event event = eventRepository.findById(2L).orElseThrow();
+        event.setConfirmedRequests(15);
+        event.setRating(15.0);
+
+        when(publicEventsService.getEventsByListIds(List.of(2L))).thenReturn(List.of(event));
+
+        Set<Long> events = new HashSet<>();
+        events.add(2L);
+
+        UpdateCompilationRequest updateCompilationRequest = new UpdateCompilationRequest(events, null, null);
+        CompilationDto compilation = compilationService.update(2L, updateCompilationRequest);
+        List<Long> eventsId = compilation.getEvents().stream()
+                .map(eventShortDto -> eventShortDto.getId())
+                .collect(toList());
+
+        assertAll(
+                () -> assertEquals(1, compilation.getEvents().size()),
+                () -> assertTrue(eventsId.contains(2L))
+        );
+    }
+
+    @Test
+    @Transactional
+    public void deleteCompilationTest() {
+        compilationService.delete(3L);
+
+        assertFalse(compilationRepository.existsById(3L));
+    }
+
+    @Test
+    public void deleteCompilationWithWrongIdTest() {
+        assertThrows(EntityNotFoundException.class, () -> compilationService.delete(1000L));
+    }
+
+    @Test
+    public void getCompilationTest() {
+        Event event = eventRepository.findById(1L).orElseThrow();
+        event.setConfirmedRequests(15);
+        event.setRating(15.0);
+
+        when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
+
+        CompilationDto compilation = compilationService.getById(1L);
+
+        assertAll(
+                () -> assertEquals(1L, compilation.getId()),
+                () -> assertEquals(1, compilation.getEvents().size())
+        );
+    }
+
+    @Test
+    public void getCompilationPinnedTrueTest() {
+        Filter params = new Filter(true, 0, 10);
+        List<CompilationDto> compilationList = compilationService.get(params);
+        List<Boolean> pinned = compilationList.stream().map(CompilationDto::getPinned).collect(toList());
+
+        assertAll(
+                () -> assertFalse(compilationList.isEmpty()),
+                () -> assertFalse(pinned.contains(false))
+        );
+    }
 
     @Test
     public void getCompilationSizeTest() {

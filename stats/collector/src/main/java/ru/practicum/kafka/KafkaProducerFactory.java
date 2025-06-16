@@ -9,6 +9,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Objects;
 import java.util.Properties;
 
 @Data
@@ -22,7 +23,7 @@ public class KafkaProducerFactory {
     @Bean(name = "customKafkaProducerFactory")
     public KafkaProducer<String, SpecificRecordBase> producer() {
         Properties properties = config.setProperties();
-        if (properties == null) {
+        if (Objects.isNull(properties)) {
             log.info("Ошибка загрузки свойств кафка");
         }
         log.info("Загруженная конфигурация {}: ", properties);
@@ -33,7 +34,7 @@ public class KafkaProducerFactory {
 
     @PreDestroy
     public void closeProducer() {
-        if (pr != null) {
+        if (Objects.nonNull(pr)) {
             pr.close();
             log.info("kafka-producer закрыт");
         }
