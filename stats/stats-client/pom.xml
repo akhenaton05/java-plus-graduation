@@ -19,12 +19,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <!-- for common classes -->
-        <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>stats-dto</artifactId>
-            <version>1.0.0</version>
-        </dependency>
         <!-- end of dependency with common classes -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
