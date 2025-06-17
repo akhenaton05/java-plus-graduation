@@ -15,11 +15,11 @@ import ru.practicum.MainService;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.category_service.dto.CategoryDto;
-import ru.practicum.config.DateConfig;
 import ru.practicum.event_service.dto.*;
 import ru.practicum.event_service.entity.EventStateAction;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.service.AdminEventService;
+import ru.practicum.user_service.config.DateConfig;
 import ru.practicum.user_service.dto.NewUserRequest;
 import ru.practicum.user_service.dto.UserDto;
 import ru.practicum.user_service.dto.UserShortDto;
@@ -57,10 +57,8 @@ public class AdminEventIntegrationTest {
     @BeforeEach
     void setUp() {
         try {
-            // Очищаем таблицу категорий
             categoryRepository.deleteAll();
 
-            // Настраиваем пользователя через UserClient
             testUserId = 1L;
             UserDto userDto = new UserDto(testUserId, "Test User", "testuser@example.com");
             UserShortDto userShortDto = new UserShortDto(testUserId, "Test User");
@@ -69,7 +67,6 @@ public class AdminEventIntegrationTest {
             when(userClient.getUser(testUserId))
                     .thenReturn(ResponseEntity.ok(userShortDto));
 
-            // Создаем категории
             testCategory = new Category();
             testCategory.setName("Test Category");
             testCategory = categoryRepository.save(testCategory);
@@ -78,7 +75,6 @@ public class AdminEventIntegrationTest {
             testCategory2.setName("Test Category 2");
             testCategory2 = categoryRepository.save(testCategory2);
 
-            // Создаем тестовое событие
             LocationDto locationDto = new LocationDto(null, 10.0f, 20.0f);
             pendingEventDto = new EventFullDto();
             pendingEventDto.setId(1L);
@@ -89,14 +85,12 @@ public class AdminEventIntegrationTest {
             pendingEventDto.setEventDate(LocalDateTime.now().plusDays(5).format(DateConfig.FORMATTER));
             pendingEventDto.setPaid(false);
             pendingEventDto.setParticipantLimit(5);
-            // Убрано setRequestModeration, так как метода нет
             pendingEventDto.setState(StateEvent.PENDING);
-            pendingEventDto.setViews(0);
+            pendingEventDto.setRating(0.0);
             pendingEventDto.setInitiator(userShortDto);
             pendingEventDto.setCreatedOn(LocalDateTime.now().format(DateConfig.FORMATTER));
             pendingEventDto.setLocation(locationDto);
 
-            // Мокаем getEvents
             when(adminEventService.getEvents(
                     eq(Collections.singletonList(testUserId)),
                     eq(Collections.singletonList(StateEvent.PENDING.name())),
@@ -107,7 +101,6 @@ public class AdminEventIntegrationTest {
                     eq(10)))
                     .thenReturn(Collections.singletonList(pendingEventDto));
 
-            // Мокаем updateEvent
             when(adminEventService.updateEvent(eq(1L), any(UpdateEventAdminRequest.class)))
                     .thenAnswer(invocation -> {
                         UpdateEventAdminRequest request = invocation.getArgument(1);
@@ -125,19 +118,17 @@ public class AdminEventIntegrationTest {
                                 pendingEventDto.getEventDate());
                         updated.setPaid(request.getPaid() != null ? request.getPaid() : pendingEventDto.isPaid());
                         updated.setParticipantLimit(request.getParticipantLimit() != null ? request.getParticipantLimit() : pendingEventDto.getParticipantLimit());
-                        // Убрано setRequestModeration, так как метода нет
                         updated.setState(request.getStateAction() != null ?
                                 (request.getStateAction() == EventStateAction.PUBLISH_EVENT ? StateEvent.PUBLISHED :
                                         (request.getStateAction() == EventStateAction.REJECT_EVENT ? StateEvent.CANCELED : StateEvent.PENDING)) :
                                 StateEvent.PENDING);
-                        updated.setViews(0);
+                        updated.setRating(0);
                         updated.setInitiator(userShortDto);
                         updated.setCreatedOn(LocalDateTime.now().format(DateConfig.FORMATTER));
                         updated.setLocation(locationDto);
                         return updated;
                     });
 
-            // Мокаем исключения
             when(adminEventService.updateEvent(eq(9999L), any(UpdateEventAdminRequest.class)))
                     .thenThrow(new EntityNotFoundException("Event not found"));
             when(adminEventService.updateEvent(eq(1L), argThat(req -> req.getCategory() != null && req.getCategory() == 9999)))

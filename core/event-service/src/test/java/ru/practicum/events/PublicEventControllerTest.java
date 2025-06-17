@@ -25,7 +25,6 @@ import ru.practicum.user_service.config.StatsClientConfig;
 import ru.practicum.event_service.entity.StateEvent;
 import ru.practicum.events.repository.EventRepository;
 import ru.practicum.events.service.PublicEventsService;
-import ru.practicum.events.service.PublicEventsServiceImpl;
 import ru.practicum.user_service.dto.UserShortDto;
 
 import java.util.Arrays;
@@ -49,13 +48,10 @@ public class PublicEventControllerTest {
     private PublicEventsService service;
 
     @MockBean
-    private PublicEventsServiceImpl publicEventsServiceImpl;
+    private StatsClientConfig statsClientConfig;
 
     @MockBean
     private DiscoveryClient discoveryClient;
-
-    @MockBean
-    private StatsClientConfig statsClientConfig;
 
     @MockBean
     private EventRepository eventRepository;
@@ -63,9 +59,7 @@ public class PublicEventControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final String firstDate = "2024-12-10 14:30:00";
-
     private final String secondDate = "2025-03-10 14:30:00";
-
     private final String thirdDate = "2024-12-11 14:30:00";
 
     private final EventFullDto eventFullDto = EventFullDto.builder()
@@ -77,7 +71,7 @@ public class PublicEventControllerTest {
             .paid(true)
             .title("without")
             .initiator(new UserShortDto())
-            .views(0)
+            .rating(4.5) // Updated to include rating
             .createdOn(secondDate)
             .description("12345".repeat(6))
             .publishedOn(thirdDate)
@@ -96,7 +90,7 @@ public class PublicEventControllerTest {
             .initiator(new UserShortDto())
             .paid(true)
             .title("First")
-            .views(0)
+            .rating(4.5) // Updated to include rating
             .build();
 
     @Test
@@ -108,23 +102,30 @@ public class PublicEventControllerTest {
         when(mockInstance.getPort()).thenReturn(9090);
         when(discoveryClient.getInstances("stats-service")).thenReturn(List.of(mockInstance));
 
-        when(service.getEventInfo(any())).thenReturn(eventFullDto);
-        long id = 1L;
+        when(service.getEventInfo(anyLong(), anyLong())).thenReturn(eventFullDto);
+        long eventId = 1L;
+        long userId = 1L;
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                        .get("/events/{id}", id)
+                        .get("/events/{id}", eventId)
+                        .header("X-EWM-USER-ID", userId)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         assertNotNull(mvcResult.getResponse());
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        EventFullDto actualEvent = objectMapper.readValue(jsonResponse, EventFullDto.class);
 
-        ArgumentCaptor<LookEventDto> lookEventDtoCaptor = ArgumentCaptor.forClass(LookEventDto.class);
+        ArgumentCaptor<Long> eventIdCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
+        verify(service).getEventInfo(eventIdCaptor.capture(), userIdCaptor.capture());
 
-        verify(service).getEventInfo(lookEventDtoCaptor.capture());
-        assertEquals(1L, lookEventDtoCaptor.getValue().getId());
-        assertNotNull(lookEventDtoCaptor.getValue().getIp());
-        assertNotNull(lookEventDtoCaptor.getValue().getUri());
+        assertEquals(eventId, eventIdCaptor.getValue());
+        assertEquals(userId, userIdCaptor.getValue());
+        assertEquals(eventFullDto.getId(), actualEvent.getId());
+        assertEquals(eventFullDto.getRating(), actualEvent.getRating());
     }
 
     @Test
@@ -137,10 +138,7 @@ public class PublicEventControllerTest {
         when(discoveryClient.getInstances("stats-service")).thenReturn(List.of(mockInstance));
 
         List<EventShortDto> expectedList = List.of(eventShortDto);
-
-        ArgumentCaptor<SearchEventsParams> searchParam = ArgumentCaptor.forClass(SearchEventsParams.class);
-        ArgumentCaptor<LookEventDto> lookEventDtoCaptor = ArgumentCaptor.forClass(LookEventDto.class);
-        when(service.getFilteredEvents(any(), any())).thenReturn(expectedList);
+        when(service.getFilteredEvents(any())).thenReturn(expectedList);
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .get("/events")
@@ -150,28 +148,27 @@ public class PublicEventControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        assertNotNull(mvcResult.getResponse());
 
+        assertNotNull(mvcResult.getResponse());
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         List<EventShortDto> factList = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
         assertEquals(1, factList.size());
         assertEquals(eventShortDto.getId(), factList.getFirst().getId());
+        assertEquals(eventShortDto.getRating(), factList.getFirst().getRating());
 
-        verify(service).getFilteredEvents(searchParam.capture(), lookEventDtoCaptor.capture());
+        ArgumentCaptor<SearchEventsParams> searchParamCaptor = ArgumentCaptor.forClass(SearchEventsParams.class);
+        verify(service).getFilteredEvents(searchParamCaptor.capture());
+        SearchEventsParams capturedParams = searchParamCaptor.getValue();
 
-        assertNull(lookEventDtoCaptor.getValue().getId());
-        assertNotNull(lookEventDtoCaptor.getValue().getIp());
-        assertNotNull(lookEventDtoCaptor.getValue().getUri());
-
-        assertEquals("", searchParam.getValue().getText(), "text");
-        assertTrue(searchParam.getValue().getCategories().isEmpty(), "categories");
-        assertNull(searchParam.getValue().getPaid(), "paid");
-        assertEquals(thirdDate, searchParam.getValue().getRangeStart(), "rangeStart");
-        assertEquals(secondDate, searchParam.getValue().getRangeEnd(), "rangeEnd");
-        assertFalse(searchParam.getValue().getOnlyAvailable(), "onlyAvailable");
-        assertEquals("EVENT_DATE", searchParam.getValue().getSort(), "sort");
-        assertEquals(0, searchParam.getValue().getFrom(), "from");
-        assertEquals(10, searchParam.getValue().getSize(), "size");
+        assertEquals("", capturedParams.getText(), "text");
+        assertTrue(capturedParams.getCategories().isEmpty(), "categories");
+        assertNull(capturedParams.getPaid(), "paid");
+        assertEquals(thirdDate, capturedParams.getRangeStart(), "rangeStart");
+        assertEquals(secondDate, capturedParams.getRangeEnd(), "rangeEnd");
+        assertFalse(capturedParams.getOnlyAvailable(), "onlyAvailable");
+        assertEquals("EVENT_DATE", capturedParams.getSort(), "sort");
+        assertEquals(0, capturedParams.getFrom(), "from");
+        assertEquals(10, capturedParams.getSize(), "size");
     }
 
     @Test
@@ -183,49 +180,45 @@ public class PublicEventControllerTest {
         when(mockInstance.getPort()).thenReturn(9090);
         when(discoveryClient.getInstances("stats-service")).thenReturn(Arrays.asList(mockInstance));
 
-        // Подготовка тестового EventShortDto
         EventShortDto eventDto = EventShortDto.builder()
                 .id(1L)
                 .annotation("Test event")
                 .category(new CategoryDto(1L, "Test Category"))
                 .confirmedRequests(0)
-                .eventDate("2025-06-01 21:31:57") // Ожидаемый формат
+                .eventDate("2025-06-01 21:31:57")
                 .initiator(new UserShortDto(1L, "Test User"))
                 .paid(true)
                 .title("Test Event")
-                .views(0)
+                .rating(4.5) // Updated to include rating
                 .build();
         List<EventShortDto> expectedList = List.of(eventDto);
 
-        // Мокаем сервис
-        when(service.getFilteredEvents(any(), any())).thenReturn(expectedList);
+        when(service.getFilteredEvents(any())).thenReturn(expectedList);
 
-        // Выполняем запрос с исправленным параметром categories
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .get("/events")
                         .accept(MediaType.APPLICATION_JSON)
                         .param("text", "0")
-                        .param("categories", "1") // Изменено с "0" на "1"
+                        .param("categories", "1")
                         .param("paid", "true")
                         .param("rangeStart", "2022-01-06 13:30:38")
                         .param("rangeEnd", "2097-09-06 13:30:38")
                         .param("onlyAvailable", "false")
-                        .param("sort", "EVENT_DATE")
+                        .param("sort", "RATING") // Updated to sort by RATING
                         .param("from", "0")
                         .param("size", "1000")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // Проверяем ответ
         String jsonResponse = mvcResult.getResponse().getContentAsString();
-        System.out.println("JSON Response: " + jsonResponse); // Для отладки
         List<EventShortDto> actualList = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
 
         assertEquals(1, actualList.size(), "Response should contain one event");
         assertEquals(eventDto.getId(), actualList.getFirst().getId(), "Event ID should match");
         assertEquals("2025-06-01 21:31:57", actualList.getFirst().getEventDate(),
                 "eventDate should be in format yyyy-MM-dd HH:mm:ss");
+        assertEquals(eventDto.getRating(), actualList.getFirst().getRating(), "Rating should match");
     }
 
     @Test
@@ -237,7 +230,7 @@ public class PublicEventControllerTest {
         when(mockInstance.getPort()).thenReturn(9090);
         when(discoveryClient.getInstances("stats-service")).thenReturn(List.of(mockInstance));
 
-        when(service.getFilteredEvents(any(), any()))
+        when(service.getFilteredEvents(any()))
                 .thenThrow(new IllegalArgumentException("Invalid date range"));
 
         mockMvc.perform(MockMvcRequestBuilders

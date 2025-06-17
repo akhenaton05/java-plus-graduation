@@ -67,7 +67,7 @@ public class CompilationIntegrationTest {
         List<Event> events = eventRepository.findAllById(List.of(3L, 4L));
         events.forEach(event -> {
             event.setConfirmedRequests(10);
-            event.setViews(20);
+            event.setRating(20.0);
         });
 
         when(publicEventsService.getEventsByListIds(List.of(3L, 4L))).thenReturn(events);
@@ -87,7 +87,7 @@ public class CompilationIntegrationTest {
     public void updatePinnedCompilationTest() {
         Event event = eventRepository.findById(1L).orElseThrow();
         event.setConfirmedRequests(15);
-        event.setViews(15);
+        event.setRating(15.0);
 
         when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
 
@@ -106,7 +106,7 @@ public class CompilationIntegrationTest {
     public void updateTitleCompilationTest() {
         Event event = eventRepository.findById(1L).orElseThrow();
         event.setConfirmedRequests(15);
-        event.setViews(15);
+        event.setRating(15.0);
 
         when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
 
@@ -126,7 +126,7 @@ public class CompilationIntegrationTest {
     public void updateEventsCompilationTest() {
         Event event = eventRepository.findById(2L).orElseThrow();
         event.setConfirmedRequests(15);
-        event.setViews(15);
+        event.setRating(15.0);
 
         when(publicEventsService.getEventsByListIds(List.of(2L))).thenReturn(List.of(event));
 
@@ -162,7 +162,7 @@ public class CompilationIntegrationTest {
     public void getCompilationTest() {
         Event event = eventRepository.findById(1L).orElseThrow();
         event.setConfirmedRequests(15);
-        event.setViews(15);
+        event.setRating(15.0);
 
         when(publicEventsService.getEventsByListIds(List.of(1L))).thenReturn(List.of(event));
 

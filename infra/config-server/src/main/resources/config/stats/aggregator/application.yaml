@@ -1,0 +1,26 @@
+logging:
+  level:
+    ru.yandex.practicum.telemetry: TRACE
+    org:
+      springframework: ERROR
+      apache.kafka: INFO
+
+server:
+  port: 0
+
+kafka:
+  consumer:
+    properties:
+      bootstrap.servers: localhost:9092
+      group.id: aggregator-group
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: kafka.deserialization.UserActionDeserializer
+    topic: stats.user-actions.v1
+  producer:
+    properties:
+      bootstrap.servers: localhost:9092
+      key.serializer: org.apache.kafka.common.serialization.StringSerializer
+      value.serializer: kafka.serialization.AvroSerializer
+    topic: stats.events-similarity.v1

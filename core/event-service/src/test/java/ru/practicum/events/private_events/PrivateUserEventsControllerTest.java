@@ -60,7 +60,7 @@ public class PrivateUserEventsControllerTest {
             .title("Title")
             .state(StateEvent.PENDING)
             .initiator(new UserShortDto())
-            .views(1)
+            .rating(1.0)
             .confirmedRequests(1)
             .paid(true)
             .requestModeration(false)
@@ -75,7 +75,7 @@ public class PrivateUserEventsControllerTest {
             .initiator(new UserShortDto())
             .paid(true)
             .title("Title")
-            .views(1)
+            .rating(1.0)
             .build();
 
     @Test
@@ -102,7 +102,7 @@ public class PrivateUserEventsControllerTest {
                 .andExpect(jsonPath("$.description", is(eventFullDto.getDescription())))
                 .andExpect(jsonPath("$.title", is(eventFullDto.getTitle())))
                 .andExpect(jsonPath("$.state", is(eventFullDto.getState().toString())))
-                .andExpect(jsonPath("$.views", is(eventFullDto.getViews())))
+                .andExpect(jsonPath("$.rating", is(eventFullDto.getRating())))
                 .andExpect(jsonPath("$.confirmedRequests", is(eventFullDto.getConfirmedRequests())))
                 .andExpect(jsonPath("$.paid", is(eventFullDto.isPaid())))
                 .andExpect(jsonPath("$.requestModeration", is(eventFullDto.isRequestModeration())))
@@ -130,7 +130,7 @@ public class PrivateUserEventsControllerTest {
                 .andExpect(jsonPath("$.description", is(eventFullDto.getDescription())))
                 .andExpect(jsonPath("$.title", is(eventFullDto.getTitle())))
                 .andExpect(jsonPath("$.state", is(eventFullDto.getState().toString())))
-                .andExpect(jsonPath("$.views", is(eventFullDto.getViews())))
+                .andExpect(jsonPath("$.rating", is(eventFullDto.getRating())))
                 .andExpect(jsonPath("$.confirmedRequests", is(eventFullDto.getConfirmedRequests())))
                 .andExpect(jsonPath("$.paid", is(eventFullDto.isPaid())))
                 .andExpect(jsonPath("$.requestModeration", is(eventFullDto.isRequestModeration())))
@@ -156,7 +156,7 @@ public class PrivateUserEventsControllerTest {
                 .andExpect(jsonPath("$[0].eventDate", is(eventShortDto.getEventDate())))
                 .andExpect(jsonPath("$[0].annotation", is(eventShortDto.getAnnotation())))
                 .andExpect(jsonPath("$[0].title", is(eventShortDto.getTitle())))
-                .andExpect(jsonPath("$[0].views", is(eventShortDto.getViews())))
+                .andExpect(jsonPath("$[0].rating", is(eventShortDto.getRating())))
                 .andExpect(jsonPath("$[0].confirmedRequests", is(eventShortDto.getConfirmedRequests())))
                 .andExpect(jsonPath("$[0].paid", is(eventShortDto.isPaid())));
     }
