@@ -3,6 +3,7 @@ package ru.practicum.events.service;
 import com.querydsl.core.BooleanBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class PublicEventsServiceImpl implements PublicEventsService {
 
     private final EventRepository eventRepository;
@@ -42,19 +44,6 @@ public class PublicEventsServiceImpl implements PublicEventsService {
     private final RequestClient requestClient;
     private final RecommendationsClient recommendationsClient;
     private final UserActionClient collectorClient;
-
-    @Autowired
-    public PublicEventsServiceImpl(EventRepository eventRepository,
-                                   EventMapper eventMapper,
-                                   RequestClient requestClient,
-                                   RecommendationsClient recommendationsClient,
-                                   UserActionClient collectorClient) {
-        this.eventRepository = eventRepository;
-        this.eventMapper = eventMapper;
-        this.requestClient = requestClient;
-        this.recommendationsClient = recommendationsClient;
-        this.collectorClient = collectorClient;
-    }
 
     @Override
     public Event getEvent(Long id) {
